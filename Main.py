@@ -125,6 +125,7 @@ def CrossValidation(cvindex,data_noCrossValidation):
 
 # Read data from json file
 def ReadData(path_0,file_0):
+    data = {}
     for i in range(len(file_0)):
         with open(path_0+file_0[i]) as json_file: 
             

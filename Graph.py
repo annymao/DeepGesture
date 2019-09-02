@@ -78,17 +78,17 @@ def ComputeDisplace(Point_t,Point_t_1):
 
 def LabelAllTrue(TaskData,iTrial):
     
-    for iFinger in range(len(TaskData["rawTouchTracks"])):
-        for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+    for iFinger in range(len(TaskData["tracks"])):
+        for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                TaskData["tracks"][iFinger]["touches"][iPoint]['label']=True
                   
 
 def LabelFalse(InputTaskData,iTrial,iFinger,iPoint):
-    InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=False
+    InputTaskData["tracks"][iFinger]["touches"][iPoint]['label']=False
 
 
 def ReadData(path_0,file_0):
-    data = dict{}
+    data = {}
     for i in range(len(file_0)):
         with open(path_0+file_0[i]) as json_file: 
             
@@ -96,22 +96,22 @@ def ReadData(path_0,file_0):
             
             if file_0[i]!=file_0[0]:
                 try:
-                    data['horizontalScrollTask']=data_0['horizontalScrollTask']
+                    data['horizontalScroll']=data_0['horizontalScroll']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['verticalScrollTask']=data_0['verticalScrollTask']
+                    data['verticalScroll']=data_0['verticalScroll']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['tapTask']=data_0['tapTask']
+                    data['tap']=data_0['tap']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['swipeTask']=data_0['swipeTask']
+                    data['swipe']=data_0['swipe']
                     
                 except:
                     a=1
@@ -119,28 +119,28 @@ def ReadData(path_0,file_0):
             elif file_0[i]==file_0[0]:
                 data=data_0
                 try:
-                    data['horizontalScrollTask']=data_0['horizontalScrollTask']
+                    data['horizontalScroll']=data_0['horizontalScroll']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['verticalScrollTask']=data_0['verticalScrollTask']
+                    data['verticalScroll']=data_0['verticalScroll']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['tapTask']=data_0['tapTask']
+                    data['tap']=data_0['tap']
                 except:
                     a=1
                     #print("No file")
                 try:
-                    data['swipeTask']=data_0['swipeTask']
+                    data['swipe']=data_0['swipe']
                     
                 except:
                     a=1
                     #print("No file")
                 
-    #print(data['tapTask'])
+    #print(data['tap'])
     Device_info=data['deviceInfo']['screenSize']
     return data,Device_info
 
@@ -150,8 +150,8 @@ def PlotJerk_AllTask(PlotData):
     DataY=list()
     AllColor=['red','green','blue','yellow','gray','purple','pink']
     ColorCount=0
-    #for task in ['tapTask','swipeTask','horizontalScrollTask','verticalScrollTask']:
-    for task in ['verticalScrollTask']:
+    #for task in ['tap','swipe','horizontalScroll','verticalScroll']:
+    for task in ['verticalScroll']:
      
         DataX=list()
         DataY=list()
@@ -162,16 +162,16 @@ def PlotJerk_AllTask(PlotData):
             EachTrialDataZ=list()
 
             if iTrial==11:
-                for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                    #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                    #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+                for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                    #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                    #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
                     
-                    if len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])>2:
-                        for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                            Point_t=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                            Point_t_1=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                            Point_t_2=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                            Point_t_3=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+                    if len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])>2:
+                        for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])):
+                            Point_t=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]
+                            Point_t_1=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]
+                            Point_t_2=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-2]
+                            Point_t_3=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-3]
                             X0=Point_t['location'][0]
                             Y0=Point_t['location'][1]
                             T0=Point_t['timestamp']
@@ -255,28 +255,28 @@ def myPlot_tap(PlotData):
 
     AllColor=['red','green','blue','yellow','gray','purple','pink',"#661111","#772222","#883333","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222"]
     
-    for i in range(len(PlotData["rawTouchTracks"])):
-        #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-        #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+    for i in range(len(PlotData["tracks"])):
+        #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+        #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
         DataX=list()
         DataY=list()
         
         BadDataX=list()
         BadDataY=list()
-        for j in range(len(PlotData["rawTouchTracks"][i]["rawTouches"])):
+        for j in range(len(PlotData["tracks"][i]["touches"])):
            
             
-            #print("Finger",(i),"X",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0]),"Y",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1]),"T",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["timestamp"]))
-            if(PlotData["rawTouchTracks"][i]["rawTouches"][j]['label']==False):
-               BadDataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               BadDataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+            #print("Finger",(i),"X",(PlotData["tracks"][i]["touches"][j]["location"][0]),"Y",(PlotData["tracks"][i]["touches"][j]["location"][1]),"T",(PlotData["tracks"][i]["touches"][j]["timestamp"]))
+            if(PlotData["tracks"][i]["touches"][j]['label']==False):
+               BadDataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               BadDataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             else:
-               DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+               DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             
-    #//print(j/len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-            # DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-            # DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+    #//print(j/len(TaskData["tracks"][i]["touches"]))
+            # DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+            # DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
         plt.scatter(BadDataX,BadDataY,c='black',label='black')
         plt.scatter(DataX,DataY,c=AllColor[i],label=AllColor[i])
             
@@ -310,29 +310,29 @@ def myPlot_tap(PlotData):
 def myPlot_swipe(PlotData,Device_info):
     import matplotlib.pyplot as plt
     AllColor=['red','green','blue','yellow','gray','purple','pink',"#661111","#772222","#883333","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222","#992222"]
-    print(len(PlotData["rawTouchTracks"]))
-    for i in range(len(PlotData["rawTouchTracks"])):
-        #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-        #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+    print(len(PlotData["tracks"]))
+    for i in range(len(PlotData["tracks"])):
+        #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+        #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
         DataX=list()
         DataY=list()
         
         BadDataX=list()
         BadDataY=list()
-        for j in range(len(PlotData["rawTouchTracks"][i]["rawTouches"])):
+        for j in range(len(PlotData["tracks"][i]["touches"])):
            
             
-            #print("Finger",(i),"X",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0]),"Y",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1]),"T",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["timestamp"]))
-            if(PlotData["rawTouchTracks"][i]["rawTouches"][j]['label']==False):
-               BadDataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               BadDataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+            #print("Finger",(i),"X",(PlotData["tracks"][i]["touches"][j]["location"][0]),"Y",(PlotData["tracks"][i]["touches"][j]["location"][1]),"T",(PlotData["tracks"][i]["touches"][j]["timestamp"]))
+            if(PlotData["tracks"][i]["touches"][j]['label']==False):
+               BadDataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               BadDataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             else:
-               DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+               DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             
-    #//print(j/len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-            # DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-            # DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+    #//print(j/len(TaskData["tracks"][i]["touches"]))
+            # DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+            # DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
         
         plt.scatter(DataX,DataY,c=AllColor[i],label=AllColor[i])
         plt.scatter(BadDataX,BadDataY,c='black',label='black')   
@@ -344,29 +344,29 @@ def myPlot_swipe(PlotData,Device_info):
 def myPlot_scroll(PlotData,Device_info):
     import matplotlib.pyplot as plt
     AllColor=['red','green','blue','yellow','gray','purple','pink',"#661111","#772222","#883333","#992222","#992222","#992222","#992222","#992222","#992222","#992222"]
-    #print(len(PlotData["rawTouchTracks"]))
-    for i in range(len(PlotData["rawTouchTracks"])):
-        #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-        #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+    #print(len(PlotData["tracks"]))
+    for i in range(len(PlotData["tracks"])):
+        #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+        #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
         DataX=list()
         DataY=list()
         
         BadDataX=list()
         BadDataY=list()
-        for j in range(len(PlotData["rawTouchTracks"][i]["rawTouches"])):
+        for j in range(len(PlotData["tracks"][i]["touches"])):
            
             
-            #print("Finger",(i),"X",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0]),"Y",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1]),"T",(PlotData["rawTouchTracks"][i]["rawTouches"][j]["timestamp"]))
-            if(PlotData["rawTouchTracks"][i]["rawTouches"][j]['label']==False):
-               BadDataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               BadDataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+            #print("Finger",(i),"X",(PlotData["tracks"][i]["touches"][j]["location"][0]),"Y",(PlotData["tracks"][i]["touches"][j]["location"][1]),"T",(PlotData["tracks"][i]["touches"][j]["timestamp"]))
+            if(PlotData["tracks"][i]["touches"][j]['label']==False):
+               BadDataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               BadDataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             else:
-               DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-               DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+               DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+               DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
             
-    #//print(j/len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-            # DataX.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][0])
-            # DataY.append(PlotData["rawTouchTracks"][i]["rawTouches"][j]["location"][1])
+    #//print(j/len(TaskData["tracks"][i]["touches"]))
+            # DataX.append(PlotData["tracks"][i]["touches"][j]["location"][0])
+            # DataY.append(PlotData["tracks"][i]["touches"][j]["location"][1])
         plt.scatter(BadDataX,BadDataY,c='black',label='black')
         plt.scatter(DataX,DataY,c=AllColor[i],label=AllColor[i])
             
@@ -479,32 +479,32 @@ def LabelByHuman_TapGraph(myTask,Device_info,TestTrial):
     AllCandidateDataBeforeCluster=list()
 
     AllFingerLargestCluster=list()
-    for iFinger in range(len(OutputData["rawTouchTracks"])):
+    for iFinger in range(len(OutputData["tracks"])):
         
         CandidateData=list()
-        for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
+        for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
              
             TargetX=OutputData["targetFrame"][0][0]+ OutputData["targetFrame"][1][0]*0.5
             TargetY=OutputData["targetFrame"][0][1]+ OutputData["targetFrame"][1][1]*0.5
              
-            # if (abs(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0] - TargetX) > myTask[iTrial]["targetFrame"][1][0]*0.5)|(abs(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1] - TargetY) > myTask[iTrial]["targetFrame"][1][1]*0.5):
+            # if (abs(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0] - TargetX) > myTask[iTrial]["targetFrame"][1][0]*0.5)|(abs(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1] - TargetY) > myTask[iTrial]["targetFrame"][1][1]*0.5):
             #     LabelFalse(myTask,TestTrial,iFinger,iPoint)
                 
              
             if iPoint==0 or iPoint==1:
                 accelerate=0
             else:
-                positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
+                positionX1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                positionY1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
+                positionT1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
 
-                positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
+                positionX2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                positionY2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
+                positionT2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
 
-                positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
+                positionX3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                positionY3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
+                positionT3=OutputData["tracks"][iFinger]["touches"][iPoint]["timestamp"]
 
                 V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
                 V2=np.sqrt((positionX3-positionX2)*(positionX3-positionX2)+(positionY3-positionY2)*(positionY3-positionY2))/(positionT3-positionT2)
@@ -514,14 +514,14 @@ def LabelByHuman_TapGraph(myTask,Device_info,TestTrial):
             if accelerate>0:
                 LabelFalse(OutputData,TestTrial,iFinger,iPoint)
             if iPoint!=0 & iPoint!=1: 
-                positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
-                positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
+                positionX1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][0]
+                positionY1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][1]
 
-                positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]
-                positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]
+                positionX2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][0]
+                positionY2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][1]
 
-                positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
+                positionX3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                positionY3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]
 
                 AverageX1=np.mean([positionX2,positionX3])
                 AverageY1=np.mean([positionY2,positionY3])
@@ -533,20 +533,20 @@ def LabelByHuman_TapGraph(myTask,Device_info,TestTrial):
 
                 if (AverageX2-positionX3)*(AverageX2-positionX3)+(AverageY2-positionY3)*(AverageY2-positionY3)>TapAllowableMovement*TapAllowableMovement:
                     LabelFalse(OutputData,TestTrial,iFinger,iPoint) 
-            if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                positionx=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                positiony=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
-                time=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]-OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
-                dx=positionx-OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][0]
-                dy=positiony-OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][1]
+            if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                positionx=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                positiony=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]
+                time=OutputData["tracks"][iFinger]["touches"][iPoint]["timestamp"]-OutputData["tracks"][iFinger]["touches"][0]["timestamp"]
+                dx=positionx-OutputData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][0]
+                dy=positiony-OutputData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][1]
                 dS=dx*dx+dy*dy
                   #AllData.append([timestamp,previousLocationX,previousLocationY,majorRadius,locationX,locationY])
 
                 CandidateData.append([iPoint,positionx,positiony,time,dS])
-        for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-            if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                px=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]
-                py=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]
+        for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
+            if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                px=OutputData["tracks"][iFinger]["touches"][iPoint]['location'][0]
+                py=OutputData["tracks"][iFinger]["touches"][iPoint]['location'][1]
                 CandidateDataInFinger.append([iFinger,iPoint])
                 AllCandidateDataBeforeCluster.append([iFinger,iPoint,px,py])
 
@@ -603,23 +603,23 @@ def LabelByHuman_TapGraph(myTask,Device_info,TestTrial):
                     Distance=distance
                     SelectedPoint=ThisClusterFinalPoint[i][0]
 
-            OutputData["rawTouchTracks"][iFinger]["rawTouches"][SelectedPoint]['label']=True
-            OutputData["rawTouchTracks"][iFinger]["rawTouches"][SelectedPoint]['location'][0]=Xave
-            OutputData["rawTouchTracks"][iFinger]["rawTouches"][SelectedPoint]['location'][1]=Yave
+            OutputData["tracks"][iFinger]["touches"][SelectedPoint]['label']=True
+            OutputData["tracks"][iFinger]["touches"][SelectedPoint]['location'][0]=Xave
+            OutputData["tracks"][iFinger]["touches"][SelectedPoint]['location'][1]=Yave
             #print("Finger",iFinger," Center",Xave,Yave)
     #in Finger end
 
     ####最後解決ｍｕlti fingers
    
-    #print("FingerNum",len(OutputData["rawTouchTracks"]))
-    # if len(OutputData["rawTouchTracks"])>0:
+    #print("FingerNum",len(OutputData["tracks"]))
+    # if len(OutputData["tracks"])>0:
     #     AfterCluster_Data=list()
     #     DataPointNum=0
-    #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-    #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-    #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-    #                 px=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]
-    #                 py=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]
+    #     for iFinger in range(len(OutputData["tracks"])):
+    #         for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
+    #              if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+    #                 px=OutputData["tracks"][iFinger]["touches"][iPoint]['location'][0]
+    #                 py=OutputData["tracks"][iFinger]["touches"][iPoint]['location'][1]
     #                 AfterCluster_Data.append([iFinger,iPoint,px,py])
     #                 DataPointNum=DataPointNum+1
     #     #print("AllFingerLargestCluster",AllFingerLargestCluster)
@@ -651,9 +651,9 @@ def LabelByHuman_TapGraph(myTask,Device_info,TestTrial):
     #     #                 DataPointNum=DataPointNum-1
 
     #     DataPointNum=0
-    #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-    #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-    #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+    #     for iFinger in range(len(OutputData["tracks"])):
+    #         for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
+    #              if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
     #                 DataPointNum=DataPointNum+1
     #     #print("After Handle Multitouch: ",DataPointNum)     
     return OutputData
@@ -688,10 +688,10 @@ def LabelByHuman_PanGraph(myTask,Device_info,Accelerate_Threshold):
     import numpy as np
     iTrial=0
     
-    for iFinger in range(len(myTask["rawTouchTracks"])):
+    for iFinger in range(len(myTask["tracks"])):
         
         CandidateData=list()
-        for iPoint in range(len(myTask["rawTouchTracks"][iFinger]["rawTouches"])):
+        for iPoint in range(len(myTask["tracks"][iFinger]["touches"])):
              
             
              if iPoint==0 or iPoint==1:
@@ -705,20 +705,20 @@ def LabelByHuman_PanGraph(myTask,Device_info,Accelerate_Threshold):
                  PointTheta_t=0
                  PointTheta_t_1=0
              else:
-                 positionX1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                 positionY1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                 positionT1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                 positionRadius1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["majorRadius"]
+                 positionX1=myTask["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                 positionY1=myTask["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
+                 positionT1=myTask["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
+                 positionRadius1=myTask["tracks"][iFinger]["touches"][iPoint-2]["majorRadius"]
                  
-                 positionX2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                 positionY2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                 positionT2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                 positionRadius2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["majorRadius"]
+                 positionX2=myTask["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                 positionY2=myTask["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
+                 positionT2=myTask["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
+                 positionRadius2=myTask["tracks"][iFinger]["touches"][iPoint-1]["majorRadius"]
                  
-                 positionX3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                 positionY3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                 positionT3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-                 positionRadius3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["majorRadius"]
+                 positionX3=myTask["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                 positionY3=myTask["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
+                 positionT3=myTask["tracks"][iFinger]["touches"][iPoint]["timestamp"]
+                 positionRadius3=myTask["tracks"][iFinger]["touches"][iPoint]["majorRadius"]
                  
                  V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
                  V2=np.sqrt((positionX3-positionX2)*(positionX3-positionX2)+(positionY3-positionY2)*(positionY3-positionY2))/(positionT3-positionT2)
@@ -730,10 +730,10 @@ def LabelByHuman_PanGraph(myTask,Device_info,Accelerate_Threshold):
                  accelerate=(V2-V1)
                  
                  if iPoint>3:
-                     positionX0=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][0]/Device_info[0]
-                     positionY0=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][1]/Device_info[1]
-                     positionT0=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["timestamp"]
-                     positionRadius0=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["majorRadius"]
+                     positionX0=myTask["tracks"][iFinger]["touches"][iPoint-3]["location"][0]/Device_info[0]
+                     positionY0=myTask["tracks"][iFinger]["touches"][iPoint-3]["location"][1]/Device_info[1]
+                     positionT0=myTask["tracks"][iFinger]["touches"][iPoint-3]["timestamp"]
+                     positionRadius0=myTask["tracks"][iFinger]["touches"][iPoint-3]["majorRadius"]
                      
                      PointTheta_t_2=ComputeTheta(positionX0,positionY0,positionX1,positionY1)
                      
@@ -782,7 +782,7 @@ def LabelByHuman_PanGraph(myTask,Device_info,Accelerate_Threshold):
                              LabelFalse(myTask,iTrial,iFinger,iPoint)
                          #if iPoint>3:
                             
-                             #if (myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]['label']==True)&(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]['label']==True)&(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]['label']==True):
+                             #if (myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]['label']==True)&(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]['label']==True)&(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]['label']==True):
                              #  LabelFalse(myTask,TestTrial,iFinger,iPoint)
     return myTask
 
@@ -790,9 +790,9 @@ def LabelByHuman_PanGraph(myTask,Device_info,Accelerate_Threshold):
 
 def LabelAllFalse(TaskData):
     
-    for iFinger in range(len(TaskData["rawTouchTracks"])):
-        for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=False
+    for iFinger in range(len(TaskData["tracks"])):
+        for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                TaskData["tracks"][iFinger]["touches"][iPoint]['label']=False
     return TaskData
 
 
@@ -827,10 +827,10 @@ def LabelByHuman_SwipeGraph(myTask,Device_info,TestTrial):
     import numpy as np
     
     iTrial=TestTrial
-    for iFinger in range(len(myTask["rawTouchTracks"])):
+    for iFinger in range(len(myTask["tracks"])):
         
         CandidateData=list()
-        for iPoint in range(len(myTask["rawTouchTracks"][iFinger]["rawTouches"])):
+        for iPoint in range(len(myTask["tracks"][iFinger]["touches"])):
              
             
              if iPoint==0 or iPoint==1 or iPoint==2:
@@ -845,21 +845,21 @@ def LabelByHuman_SwipeGraph(myTask,Device_info,TestTrial):
                  PointTheta_t_1=0
              else:
 
-                 positionX0=myTask["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0]/Device_info[0]
-                 positionY0=myTask["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1]/Device_info[1]
+                 positionX0=myTask["tracks"][iFinger]["touches"][0]["location"][0]/Device_info[0]
+                 positionY0=myTask["tracks"][iFinger]["touches"][0]["location"][1]/Device_info[1]
                  
 
-                 positionX1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][0]/Device_info[0]
-                 positionY1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][1]/Device_info[1]
+                 positionX1=myTask["tracks"][iFinger]["touches"][iPoint-3]["location"][0]/Device_info[0]
+                 positionY1=myTask["tracks"][iFinger]["touches"][iPoint-3]["location"][1]/Device_info[1]
                  
-                 positionX2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                 positionY2=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
+                 positionX2=myTask["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                 positionY2=myTask["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
                  
-                 positionX3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                 positionY3=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
+                 positionX3=myTask["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                 positionY3=myTask["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
                  
-                 positionX4=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                 positionY4=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
+                 positionX4=myTask["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                 positionY4=myTask["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
                  
                  PointTheta_t=ComputeTheta(positionX3,positionY3,positionX4,positionY4)
                  PointTheta_t_1=ComputeTheta(positionX2,positionY2,positionX3,positionY3)
@@ -910,23 +910,23 @@ def LabelByHuman_SwipeGraph(myTask,Device_info,TestTrial):
                     LabelFalse(myTask,TestTrial,iFinger,iPoint)
                          #if iPoint>3:
                             
-                             #if (myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]['label']==True)&(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]['label']==True)&(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]['label']==True):
+                             #if (myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]['label']==True)&(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]['label']==True)&(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]['label']==True):
                              #  LabelFalse(myTask,TestTrial,iFinger,iPoint)
 
-    for iFinger in range(len(myTask["rawTouchTracks"])):
+    for iFinger in range(len(myTask["tracks"])):
             
             AllPoint_dx=list()
             AllPoint_dy=list()
 
-            for iPoint in range(len(myTask["rawTouchTracks"][iFinger]["rawTouches"])):
-                if myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    positionX_t_1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][0]/Device_info[0]
-                    positionY_t_1=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][1]/Device_info[1]
+            for iPoint in range(len(myTask["tracks"][iFinger]["touches"])):
+                if myTask["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    positionX_t_1=myTask["tracks"][iFinger]["touches"][iPoint]["previousLocation"][0]/Device_info[0]
+                    positionY_t_1=myTask["tracks"][iFinger]["touches"][iPoint]["previousLocation"][1]/Device_info[1]
 
                   
 
-                    positionX=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                    positionY=myTask["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
+                    positionX=myTask["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                    positionY=myTask["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
 
                     AllPoint_dx.append(positionX-positionX_t_1)
                     AllPoint_dy.append(positionY-positionY_t_1)
@@ -937,15 +937,15 @@ def LabelByHuman_SwipeGraph(myTask,Device_info,TestTrial):
             NewY=Ave_dy*100000
 
             print(NewX,NewY)
-            myTask["rawTouchTracks"][iFinger]["rawTouches"][1]["location"][0]=myTask["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0]+NewX
-            myTask["rawTouchTracks"][iFinger]["rawTouches"][1]["location"][1]=myTask["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1]+NewY
+            myTask["tracks"][iFinger]["touches"][1]["location"][0]=myTask["tracks"][iFinger]["touches"][0]["location"][0]+NewX
+            myTask["tracks"][iFinger]["touches"][1]["location"][1]=myTask["tracks"][iFinger]["touches"][0]["location"][1]+NewY
     
     LabelAllFalse(myTask)
 
-    for iFinger in range(len(myTask["rawTouchTracks"])):
-        if len(myTask["rawTouchTracks"][iFinger]["rawTouches"])>1:
-            myTask["rawTouchTracks"][iFinger]["rawTouches"][0]['label']=True
-            myTask["rawTouchTracks"][iFinger]["rawTouches"][1]['label']=True
+    for iFinger in range(len(myTask["tracks"])):
+        if len(myTask["tracks"][iFinger]["touches"])>1:
+            myTask["tracks"][iFinger]["touches"][0]['label']=True
+            myTask["tracks"][iFinger]["touches"][1]['label']=True
                 
                 
 
@@ -963,18 +963,18 @@ def FilteredJson(InputTaskData):
         
         FilterDataDict=dict()
         FilterData=list()
-        for iFinger in range(len(InputTaskData[iTrial]["rawTouchTracks"])):
+        for iFinger in range(len(InputTaskData[iTrial]["tracks"])):
             EachFinger=list()
-            for iPoint in range(len(InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                if InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    EachFinger.append(InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint])
+            for iPoint in range(len(InputTaskData[iTrial]["tracks"][iFinger]["touches"])):
+                if InputTaskData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    EachFinger.append(InputTaskData[iTrial]["tracks"][iFinger]["touches"][iPoint])
                     
             
             if len(EachFinger)!=0:
-                EachFingerDict={'rawTouches':EachFinger}
+                EachFingerDict={'touches':EachFinger}
                 FilterData.append(EachFingerDict)
         
-        FilterDataDict={'rawTouchTracks':FilterData,'targetFrame':InputTaskData[iTrial]["targetFrame"]}
+        FilterDataDict={'tracks':FilterData,'targetFrame':InputTaskData[iTrial]["targetFrame"]}
         FinalTaskData.append(FilterDataDict) 
     return FinalTaskData
 
@@ -983,25 +983,25 @@ def FilteredJson2(InputTaskData):
     
     FilterDataDict=dict()
     FilterData=list()
-    for iFinger in range(len(InputTaskData["rawTouchTracks"])):
+    for iFinger in range(len(InputTaskData["tracks"])):
         EachFinger=list()
-        for iPoint in range(len(InputTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            if InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                EachFinger.append(InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint])
+        for iPoint in range(len(InputTaskData["tracks"][iFinger]["touches"])):
+            if InputTaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                EachFinger.append(InputTaskData["tracks"][iFinger]["touches"][iPoint])
                 
         
         if len(EachFinger)!=0:
-            EachFingerDict={'rawTouches':EachFinger}
+            EachFingerDict={'touches':EachFinger}
             FilterData.append(EachFingerDict)
     
-    FilterDataDict={'rawTouchTracks':FilterData,'targetFrame':InputTaskData["targetFrame"]}
+    FilterDataDict={'tracks':FilterData,'targetFrame':InputTaskData["targetFrame"]}
     FinalTaskData.append(FilterDataDict) 
 
     return FinalTaskData
 
 def PlotTap(data,TestTrial,Device_info):
     import TaskSuccessVerify as tv
-    #TaskData=data['tapTask']['trials']
+    #TaskData=data['tap']['trials']
     #Device_info=data['deviceInfo']['screenSize']
     LabelAllTrue(data,TestTrial)
     OriTrue=0
@@ -1023,13 +1023,13 @@ def PlotTap(data,TestTrial,Device_info):
     myPlot_tap(data)
     
 
-    # if tv.TapTask(OptimizedData[0],TestTrial)==False:
+    # if tv.tap(OptimizedData[0],TestTrial)==False:
     #     #myPlot_tap(OptimizedData[0])
     #     myPlot_tap(data)
 
     #
-    #myPlot_tap(data['tapTask']['trials'][TestTrial])
-    #myPlot_tap(FilteredJson(data['tapTask']['trials'])[TestTrial])
+    #myPlot_tap(data['tap']['trials'][TestTrial])
+    #myPlot_tap(FilteredJson(data['tap']['trials'])[TestTrial])
 
    
    
@@ -1039,7 +1039,7 @@ def PlotTap(data,TestTrial,Device_info):
     
    
 
-    return tv.TapTask(OptimizedData[0],TestTrial)
+    return tv.tap(OptimizedData[0],TestTrial)
 
 def PlotJerk_AllVelocity(PlotData,User):
     import matplotlib.pyplot as plt
@@ -1051,8 +1051,8 @@ def PlotJerk_AllVelocity(PlotData,User):
     DataZ=list()
     AllColor=['red','green','blue','yellow','gray','purple','pink']
     ColorCount=0
-    for task in ['swipeTask','horizontalScrollTask','verticalScrollTask','tapTask']:
-    #for task in ['verticalScrollTask']:
+    for task in ['swipe','horizontalScroll','verticalScroll','tap']:
+    #for task in ['verticalScroll']:
         EachTrialDataX=list()
         EachTrialDataY=list()
         EachTrialDataZ=list()
@@ -1061,16 +1061,16 @@ def PlotJerk_AllVelocity(PlotData,User):
             
 
             
-            for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+            for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
                 
-                if len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])>2:
-                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                        Point_t=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                        Point_t_1=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                        Point_t_2=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                        Point_t_3=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+                if len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])>2:
+                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])):
+                        Point_t=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]
+                        Point_t_1=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]
+                        Point_t_2=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-2]
+                        Point_t_3=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-3]
                         X0=Point_t['location'][0]
                         Y0=Point_t['location'][1]
                         T0=Point_t['timestamp']
@@ -1159,19 +1159,19 @@ def Plot_FingerTime(PlotData,User,iUser):
     DataZ=list()
     AllColor=['red','green','blue','yellow','gray','purple','pink']
     ColorCount=0
-    for task in ['tapTask','swipeTask']:
-    #for task in ['verticalScrollTask','horizontalScrollTask']:
+    for task in ['tap','swipe']:
+    #for task in ['verticalScroll','horizontalScroll']:
         EachTrialDataX=list()
         EachTrialDataY=list()
         EachTrialDataZ=list()
         
         for iTrial in range(len(PlotData[task]['trials'])):
             
-            for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+            for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
                 
-                Finaldt=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][-1]['timestamp']-PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                Finaldt=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][-1]['timestamp']-PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                 
                 EachTrialDataX.append(Finaldt)
                 
@@ -1221,8 +1221,8 @@ def PlotJerk_Accelerate(PlotData,User):
     DataZ=list()
     AllColor=['red','green','blue','yellow','gray','purple','pink']
     ColorCount=0
-    for task in ['swipeTask','horizontalScrollTask','verticalScrollTask','tapTask']:
-    #for task in ['verticalScrollTask']:
+    for task in ['swipe','horizontalScroll','verticalScroll','tap']:
+    #for task in ['verticalScroll']:
         EachTrialDataX=list()
         EachTrialDataY=list()
         EachTrialDataZ=list()
@@ -1231,16 +1231,16 @@ def PlotJerk_Accelerate(PlotData,User):
             
 
             
-            for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+            for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
                 
-                if len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])>2:
-                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                        Point_t=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                        Point_t_1=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                        Point_t_2=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                        Point_t_3=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+                if len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])>2:
+                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])):
+                        Point_t=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]
+                        Point_t_1=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]
+                        Point_t_2=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-2]
+                        Point_t_3=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-3]
                         X0=Point_t['location'][0]
                         Y0=Point_t['location'][1]
                         T0=Point_t['timestamp']
@@ -1328,7 +1328,7 @@ def PlotJerk_Accelerate(PlotData,User):
 
 def PlotSwipe(data,TestTrial,Device_info):
     
-    #TaskData=data['tapTask']['trials']
+    #TaskData=data['tap']['trials']
     #Device_info=data['deviceInfo']['screenSize']
     LabelAllTrue(data,TestTrial)
     OriTrue=0
@@ -1342,13 +1342,13 @@ def PlotSwipe(data,TestTrial,Device_info):
     #LabelByPersonalTouch(TaskData,Device_info,HD,TA,IG,IG_state)
     myPlot_swipe(data,Device_info)
     #
-    #myPlot_tap(data['tapTask']['trials'][TestTrial])
-    #myPlot_tap(FilteredJson(data['tapTask']['trials'])[TestTrial])
+    #myPlot_tap(data['tap']['trials'][TestTrial])
+    #myPlot_tap(FilteredJson(data['tap']['trials'])[TestTrial])
     return data
 
 def PlotHScroll(data,TestTrial,Device_info):
     
-    #TaskData=data['tapTask']['trials']
+    #TaskData=data['tap']['trials']
     #Device_info=data['deviceInfo']['screenSize']
     LabelAllTrue(data,TestTrial)
     OriTrue=0
@@ -1362,13 +1362,13 @@ def PlotHScroll(data,TestTrial,Device_info):
     #LabelByPersonalTouch(TaskData,Device_info,HD,TA,IG,IG_state)
     myPlot_scroll(data,Device_info)
     #
-    #myPlot_tap(data['tapTask']['trials'][TestTrial])
-    #myPlot_tap(FilteredJson(data['tapTask']['trials'])[TestTrial])
+    #myPlot_tap(data['tap']['trials'][TestTrial])
+    #myPlot_tap(FilteredJson(data['tap']['trials'])[TestTrial])
     return data
 
 def PlotVScroll(data,TestTrial,Device_info):
     
-    #TaskData=data['tapTask']['trials']
+    #TaskData=data['tap']['trials']
     #Device_info=data['deviceInfo']['screenSize']
     LabelAllTrue(data,TestTrial)
     OriTrue=0
@@ -1382,8 +1382,8 @@ def PlotVScroll(data,TestTrial,Device_info):
     #LabelByPersonalTouch(TaskData,Device_info,HD,TA,IG,IG_state)
     myPlot_scroll(data,Device_info)
     #
-    #myPlot_tap(data['tapTask']['trials'][TestTrial])
-    #myPlot_tap(FilteredJson(data['tapTask']['trials'])[TestTrial])
+    #myPlot_tap(data['tap']['trials'][TestTrial])
+    #myPlot_tap(FilteredJson(data['tap']['trials'])[TestTrial])
     return data
 
 def PlotJerk(PlotData):
@@ -1391,16 +1391,16 @@ def PlotJerk(PlotData):
     DataX=list()
     DataY=list()
       
-    for iFinger in range(len(PlotData["rawTouchTracks"])):
-        #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-        #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
+    for iFinger in range(len(PlotData["tracks"])):
+        #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+        #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
         
-        if len(PlotData["rawTouchTracks"][iFinger]["rawTouches"])>2:
-            for iPoint in range(3,len(PlotData["rawTouchTracks"][iFinger]["rawTouches"])):
-                Point_t=PlotData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                Point_t_1=PlotData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                Point_t_2=PlotData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                Point_t_3=PlotData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+        if len(PlotData["tracks"][iFinger]["touches"])>2:
+            for iPoint in range(3,len(PlotData["tracks"][iFinger]["touches"])):
+                Point_t=PlotData["tracks"][iFinger]["touches"][iPoint]
+                Point_t_1=PlotData["tracks"][iFinger]["touches"][iPoint-1]
+                Point_t_2=PlotData["tracks"][iFinger]["touches"][iPoint-2]
+                Point_t_3=PlotData["tracks"][iFinger]["touches"][iPoint-3]
                 X0=Point_t['location'][0]
                 Y0=Point_t['location'][1]
                 T0=Point_t['timestamp']
@@ -1441,7 +1441,7 @@ def PlotAllJerk(PlotData):
     AllDataX=list()
     AllDataY=list()
     AllDataZ=list()
-    for task in ['tapTask','swipeTask','horizontalScrollTask','verticalScrollTask']:
+    for task in ['tap','swipe','horizontalScroll','verticalScroll']:
         DataX=list()
         DataY=list()
         DataZ=list()
@@ -1449,15 +1449,15 @@ def PlotAllJerk(PlotData):
             DataX_IneachTrial=list()
             DataY_IneachTrial=list()
             DataZ_IneachTrial=list()
-            for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                if len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])>2:
-                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                        Point_t=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                        Point_t_1=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                        Point_t_2=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                        Point_t_3=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+            for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                if len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])>2:
+                    for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])):
+                        Point_t=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]
+                        Point_t_1=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]
+                        Point_t_2=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-2]
+                        Point_t_3=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-3]
                         X0=Point_t['location'][0]
                         Y0=Point_t['location'][1]
                         T0=Point_t['timestamp']
@@ -1522,7 +1522,7 @@ def PlotAllJerk(PlotData):
 
 def DurationDiscreteGesture_v1():
 
-
+    #ANNY-NOTE: file path
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014']
 
     #AllUser=['3007','3008','3009','3010','3011','3012','3014']
@@ -1540,10 +1540,10 @@ def DurationDiscreteGesture_v1():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         plt.subplots_adjust(wspace=0.5,hspace=0.5)
         plt.subplot(4,3,iUser+1)
@@ -1556,6 +1556,7 @@ def DurationDiscreteGesture_v1():
 
 def TapMovement():
     import numpy as np
+    #ANNY-NOTE: file path
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014','3015']
     AllUserLabel=['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12','P13']
     Alllist=list()
@@ -1576,10 +1577,10 @@ def TapMovement():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapMovement=list()
         
@@ -1588,12 +1589,12 @@ def TapMovement():
         for iTrial in range(len(Tap_GraphData)):
             #for tapEvent in range(len(Tap_GraphData[iTrial]['tapEvents'])):
             
-            for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
+            for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
                 FingerLargestMovement=0
-                for iPoint in range(len(Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
+                for iPoint in range(len(Tap_GraphData[iTrial]["tracks"][iFinger]["touches"])):
 
-                    dx=Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['location'][0]
-                    dy=Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['location'][1]
+                    dx=Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][0]-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['location'][0]
+                    dy=Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][1]-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['location'][1]
                 
                     if np.sqrt(dx*dx+dy*dy)>FingerLargestMovement:
                         FingerLargestMovement=np.sqrt(dx*dx+dy*dy)
@@ -1667,6 +1668,7 @@ def TapMovement():
 
 def DurationDiscreteGesture_v2():
     import numpy as np
+    #ANNY-NOTE: file path 
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014','3015']
     AllUserLabel=['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12','P13']
     Alllist=list()
@@ -1687,10 +1689,10 @@ def DurationDiscreteGesture_v2():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapDuration=list()
         SwipeDuration=list()
@@ -1699,8 +1701,8 @@ def DurationDiscreteGesture_v2():
         for iTrial in range(len(Tap_GraphData)):
             #for tapEvent in range(len(Tap_GraphData[iTrial]['tapEvents'])):
             
-            for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
-                t=Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][len(Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+            for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
+                t=Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][len(Tap_GraphData[iTrial]["tracks"][iFinger]["touches"])-1]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                 if t>0:
                     TapDuration.append(t)
             
@@ -1708,8 +1710,8 @@ def DurationDiscreteGesture_v2():
         for iTrial in range(len(Swipe_GraphData)):
             #for tapEvent in range(len(Swipe_GraphData[iTrial]['tapEvents'])):
            
-            for iFinger in range(len(Swipe_GraphData[iTrial]["rawTouchTracks"])):
-                t=Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][len(Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']-Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+            for iFinger in range(len(Swipe_GraphData[iTrial]["tracks"])):
+                t=Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][len(Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"])-1]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                 if t>0:
                     SwipeDuration.append(t)
             
@@ -1801,10 +1803,10 @@ def SurveyThreshold():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapTaskResponseTime=list()
         for iTrial in range(len(Tap_GraphData)):
@@ -1813,19 +1815,21 @@ def SurveyThreshold():
                 if Tap_GraphData[iTrial]['success']==True:
                     for panevent in range(len(Tap_GraphData[iTrial]['tapEvents'])):
                         if Tap_GraphData[iTrial]['tapEvents'][panevent]['state']=='ended':
-                            if len(Tap_GraphData[iTrial]["rawTouchTracks"])==1:
-                                for iPoint in range(len(Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"])):
+                            if len(Tap_GraphData[iTrial]["tracks"])==1:
+                                for iPoint in range(len(Tap_GraphData[iTrial]["tracks"][0]["touches"])):
 
-                                    dX=Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][iPoint]['location'][0]-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-                                    dY=Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][iPoint]['location'][1]-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+                                    dX=Tap_GraphData[iTrial]["tracks"][0]["touches"][iPoint]['location'][0]-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['location'][0]
+                                    dY=Tap_GraphData[iTrial]["tracks"][0]["touches"][iPoint]['location'][1]-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['location'][1]
                                     
                                     AllDisplace.append(np.sqrt(dX*dX+dY*dY))
             if len(AllDisplace)>=1:
                 print(np.max(AllDisplace))
 
 
-
+## ANNY-NOTE: 需要 event
 def Draw_RecognizerSponseTime():
+    #ANNY-NOTE: file path
+
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014']
 
     Alllist=list()
@@ -1844,20 +1848,20 @@ def Draw_RecognizerSponseTime():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapTaskResponseTime=list()
         for iTrial in range(len(Tap_GraphData)):
             #for tapEvent in range(len(Tap_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
                 if len(Tap_GraphData[iTrial]['tapEvents'])>0:
-                    TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+                    TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             
 
-            #TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+            #TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             
 
 
@@ -1866,8 +1870,8 @@ def Draw_RecognizerSponseTime():
             for panEvent in range(1):
                 if len(Tap_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Tap_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
+                        t=Tap_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     TapTaskResponseTime.append(np.min(Min))
@@ -1877,13 +1881,13 @@ def Draw_RecognizerSponseTime():
             #for tapEvent in range(len(Swipe_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
                 if len(Swipe_GraphData[iTrial]['tapEvents'])>0:
-                    SwipeTaskResponseTime.append(Swipe_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Swipe_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+                    SwipeTaskResponseTime.append(Swipe_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(Swipe_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
                 if len(Swipe_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Swipe_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Swipe_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Swipe_GraphData[iTrial]["tracks"])):
+                        t=Swipe_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     SwipeTaskResponseTime.append(np.min(Min))
@@ -1893,13 +1897,13 @@ def Draw_RecognizerSponseTime():
             #for tapEvent in range(len(HScroll_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
                 if len(HScroll_GraphData[iTrial]['tapEvents'])>0:
-                    HPanTaskResponseTime.append(HScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-HScroll_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+                    HPanTaskResponseTime.append(HScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(HScroll_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
                 if len(HScroll_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(HScroll_GraphData[iTrial]["rawTouchTracks"])):
-                        t=HScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-HScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
+                        t=HScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     HPanTaskResponseTime.append(np.min(Min))
@@ -1909,13 +1913,13 @@ def Draw_RecognizerSponseTime():
             #for tapEvent in range(len(VScroll_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
                 if len(VScroll_GraphData[iTrial]['tapEvents'])>0:
-                    VPanTaskResponseTime.append(VScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-VScroll_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+                    VPanTaskResponseTime.append(VScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(VScroll_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
                 if len(VScroll_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(HScroll_GraphData[iTrial]["rawTouchTracks"])):
-                        t=VScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-VScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
+                        t=VScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     VPanTaskResponseTime.append(np.min(Min))
@@ -1968,7 +1972,7 @@ def Draw_RecognizerSponseTime():
         # plt.title('verticalscroll')
         # plt.show()
 
-
+## ANNY-NOTE: 需要 event
 def DefaultSystemRecognitionTime():
     import numpy as np
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014','3015']
@@ -1991,18 +1995,18 @@ def DefaultSystemRecognitionTime():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapResponseTime=list()
         PanResponseTime=list()
 
 
         for iTrial in range(len(Tap_GraphData)):
-            if len(Tap_GraphData[iTrial]["rawTouchTracks"])>0:
-                FirstFingerTime=Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
+            if len(Tap_GraphData[iTrial]["tracks"])>0:
+                FirstFingerTime=Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp']
                 if len(Tap_GraphData[iTrial]['tapEvents'])>0: #有tap
                     TapResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-FirstFingerTime)
 
@@ -2010,8 +2014,8 @@ def DefaultSystemRecognitionTime():
                     PanResponseTime.append(Tap_GraphData[iTrial]['panEvents'][0]['timestamp']-FirstFingerTime)
 
         for iTrial in range(len(Swipe_GraphData)):
-            if len(Swipe_GraphData[iTrial]["rawTouchTracks"])>0:
-                FirstFingerTime=Swipe_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
+            if len(Swipe_GraphData[iTrial]["tracks"])>0:
+                FirstFingerTime=Swipe_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp']
                 if len(Swipe_GraphData[iTrial]['tapEvents'])>0: #有tap
                     TapResponseTime.append(Swipe_GraphData[iTrial]['tapEvents'][0]['timestamp']-FirstFingerTime)
 
@@ -2019,8 +2023,8 @@ def DefaultSystemRecognitionTime():
                     PanResponseTime.append(Swipe_GraphData[iTrial]['panEvents'][0]['timestamp']-FirstFingerTime)
 
         for iTrial in range(len(HScroll_GraphData)):
-            if len(HScroll_GraphData[iTrial]["rawTouchTracks"])>0:
-                FirstFingerTime=HScroll_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
+            if len(HScroll_GraphData[iTrial]["tracks"])>0:
+                FirstFingerTime=HScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp']
                 if len(HScroll_GraphData[iTrial]['tapEvents'])>0: #有tap
                     TapResponseTime.append(HScroll_GraphData[iTrial]['tapEvents'][0]['timestamp']-FirstFingerTime)
 
@@ -2028,8 +2032,8 @@ def DefaultSystemRecognitionTime():
                     PanResponseTime.append(HScroll_GraphData[iTrial]['panEvents'][0]['timestamp']-FirstFingerTime)
 
         for iTrial in range(len(VScroll_GraphData)):
-            if len(VScroll_GraphData[iTrial]["rawTouchTracks"])>0:
-                FirstFingerTime=VScroll_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
+            if len(VScroll_GraphData[iTrial]["tracks"])>0:
+                FirstFingerTime=VScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp']
                 if len(VScroll_GraphData[iTrial]['tapEvents'])>0: #有tap
                     TapResponseTime.append(VScroll_GraphData[iTrial]['tapEvents'][0]['timestamp']-FirstFingerTime)
 
@@ -2039,7 +2043,7 @@ def DefaultSystemRecognitionTime():
         print(User," Tap Recognition Time ",np.mean(TapResponseTime)," Pan Recognition Time ",np.mean(PanResponseTime)," Average ",(np.mean(TapResponseTime)+np.mean(PanResponseTime))/2)
 
 
-
+## ANNY-NOTE: 需要 event
 def RecognizerSponseTime():
     import numpy as np
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014','3015']
@@ -2062,10 +2066,10 @@ def RecognizerSponseTime():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapResponseTime=list()
         PanResponseTime=list()
@@ -2076,19 +2080,19 @@ def RecognizerSponseTime():
             for tapEvent in range(1):
                 if len(Tap_GraphData[iTrial]['tapEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
+                        t=Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
                         TapResponseTime.append(np.min(Min))
 
 
-                    # if Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']>0:
-                    #     TapResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+                    # if Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp']>0:
+                    #     TapResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             
 
-            #TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp'])
+            #TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             
 
 
@@ -2097,8 +2101,8 @@ def RecognizerSponseTime():
             for panEvent in range(1):
                 if len(Tap_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Tap_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
+                        t=Tap_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2111,8 +2115,8 @@ def RecognizerSponseTime():
 
                 if len(Swipe_GraphData[iTrial]['tapEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Swipe_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Swipe_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Swipe_GraphData[iTrial]["tracks"])):
+                        t=Swipe_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2122,8 +2126,8 @@ def RecognizerSponseTime():
             for panEvent in range(1):
                 if len(Swipe_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(Swipe_GraphData[iTrial]["rawTouchTracks"])):
-                        t=Swipe_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Swipe_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(Swipe_GraphData[iTrial]["tracks"])):
+                        t=Swipe_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2135,8 +2139,8 @@ def RecognizerSponseTime():
             for tapEvent in range(1):
                 if len(HScroll_GraphData[iTrial]['tapEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(HScroll_GraphData[iTrial]["rawTouchTracks"])):
-                        t=HScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-HScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
+                        t=HScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2146,9 +2150,9 @@ def RecognizerSponseTime():
             for panEvent in range(1):
                 if len(HScroll_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(HScroll_GraphData[iTrial]["rawTouchTracks"])):
+                    for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
 
-                        t=HScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-HScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                        t=HScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2161,8 +2165,8 @@ def RecognizerSponseTime():
             for tapEvent in range(1):
                 if len(VScroll_GraphData[iTrial]['tapEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(VScroll_GraphData[iTrial]["rawTouchTracks"])):
-                        t=VScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-VScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(VScroll_GraphData[iTrial]["tracks"])):
+                        t=VScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2171,8 +2175,8 @@ def RecognizerSponseTime():
             for panEvent in range(1):
                 if len(VScroll_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
-                    for iFinger in range(len(VScroll_GraphData[iTrial]["rawTouchTracks"])):
-                        t=VScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-VScroll_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    for iFinger in range(len(VScroll_GraphData[iTrial]["tracks"])):
+                        t=VScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     if len(Min)>0:
@@ -2247,9 +2251,9 @@ def OverView():
     import matplotlib.patches as patches
     import matplotlib.gridspec as gridspec
     def LabelAllTrue(TaskData):
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+        for iFinger in range(len(TaskData["tracks"])):
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                    TaskData["tracks"][iFinger]["touches"][iPoint]['label']=True
 
         return TaskData
     def DrawScroll(TaskData):
@@ -2260,8 +2264,8 @@ def OverView():
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         #TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         #TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -2284,13 +2288,13 @@ def OverView():
         AllFinger_PositionY=list()
         #rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         #ax1.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                # if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                # if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -2308,8 +2312,8 @@ def OverView():
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -2321,100 +2325,21 @@ def OverView():
         fig = plt.figure(figsize=(10, 8))
         outer = gridspec.GridSpec(3, 2, wspace=0.1, hspace=0.1)
         
-                
-
-               
-        ##############################
-        # # plt.subplot(4,1,1)
-        # fig1,ax1=plt.subplots(1)
-        # #fig1,ax1=plt.subplots(4,1,1)
-        # # inner1 = gridspec.GridSpecFromSubplotSpec(1, 1,
-        # #                 subplot_spec=outer[0], wspace=0.0, hspace=0.0)
-        # # ax1 = plt.Subplot(fig, inner1[0])
-
-        # AllFinger_PositionX=list()
-        # AllFinger_PositionY=list()
-        # rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
-        # ax1.add_patch(rect)
-        # for iFinger in range(len(TaskData["rawTouchTracks"])):
-        #     AllFinger_PositionX.append([])
-        #     AllFinger_PositionY.append([])
-        #     for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-        #         # if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-        #             AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-        #             AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-
-        # for iFinger in range(len(AllFinger_PositionX)):
-        #     ax1.scatter(AllFinger_PositionX[iFinger],AllFinger_PositionY[iFinger],color=AllColor[iFinger])
-
-        # plt.xlim(TargetX-100,TargetX+100)
-        # plt.ylim(TargetY-100,TargetY+100)
-
-
-        ######################################
-        #plt.subplot(4,1,2)
-        # fig2,ax2=plt.subplots(1)
-        # #fig2,ax2=plt.subplots(4,1,2)
-        
-        # # inner2 = gridspec.GridSpecFromSubplotSpec(1, 1,
-        # #                 subplot_spec=outer[1], wspace=0.0, hspace=0.0)
-        # # ax2 = plt.Subplot(fig, inner2[0])
-        # AllFinger_PositionX=list()
-        # AllFinger_PositionY=list()
-        # print(TargetX,TargetY,firstPointX,firstPointY)
-        # rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
-        # ax2.add_patch(rect)
-
-
-        # for iFinger in range(len(TaskData["rawTouchTracks"])):
-            
-        #     for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-        #         if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==False:
-        #             #print(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-        #             AllFinger_PositionX_Dropout.append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-        #             AllFinger_PositionY_Dropout.append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-       
-        # # plt.scatter(AllFinger_PositionX_Dropout,AllFinger_PositionY_Dropout,color='black')
-       
-
-        
-        
-        # # ax.xlim(firstPointX-50,firstPointX+50)
-        # # ax.ylim(firstPointY-50,firstPointY+50)
-
-
-        
-        # ax2.scatter(AllFinger_PositionX_Dropout,AllFinger_PositionY_Dropout,color='black')
-
-
-
-
-
-        # plt.xlim(TargetX-100,TargetX+100)
-        # plt.ylim(TargetY-100,TargetY+100)
-
-        # ###################################
-        #plt.subplot(4,1,3)
         fig3,ax3=plt.subplots(1)
-        #fig3,ax3=plt.subplots(4,1,3)
-        # inner3 = gridspec.GridSpecFromSubplotSpec(1, 1,
-        #                 subplot_spec=outer[2], wspace=0.0, hspace=0.0)
-        # ax3 = plt.Subplot(fig, inner3[0])
+
 
 
         AllFinger_PositionX=list()
         AllFinger_PositionY=list()
         rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         ax3.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -2449,10 +2374,10 @@ def OverView():
     GraphData=ReadData(path,file)
 
     Device_info=GraphData[0]['deviceInfo']['screenSize']
-    Tap_GraphData=GraphData[0]['tapTask']['trials']
-    Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-    HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-    VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+    Tap_GraphData=GraphData[0]['tap']['trials']
+    Swipe_GraphData=GraphData[0]['swipe']['trials']
+    HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+    VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
     
     task='pan'
@@ -2551,10 +2476,10 @@ def AnalysisOfFingerNum():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapSingle=0
         TapMulti=0
@@ -2570,30 +2495,30 @@ def AnalysisOfFingerNum():
 
         for iTrial in range(len(Tap_GraphData)):
             
-            if len(Tap_GraphData[iTrial]["rawTouchTracks"])==1:
+            if len(Tap_GraphData[iTrial]["tracks"])==1:
                 TapSingle=TapSingle+1
-            elif len(Tap_GraphData[iTrial]["rawTouchTracks"])>1:
+            elif len(Tap_GraphData[iTrial]["tracks"])>1:
                 TapMulti=TapMulti+1
 
         for iTrial in range(len(Swipe_GraphData)):
             
-            if len(Swipe_GraphData[iTrial]["rawTouchTracks"])==1:
+            if len(Swipe_GraphData[iTrial]["tracks"])==1:
                 SwipeSingle=SwipeSingle+1
-            elif len(Swipe_GraphData[iTrial]["rawTouchTracks"])>1:
+            elif len(Swipe_GraphData[iTrial]["tracks"])>1:
                 SwipeMulti=SwipeMulti+1
 
         for iTrial in range(len(HScroll_GraphData)):
             
-            if len(HScroll_GraphData[iTrial]["rawTouchTracks"])==1:
+            if len(HScroll_GraphData[iTrial]["tracks"])==1:
                 HPanSingle=HPanSingle+1
-            elif len(HScroll_GraphData[iTrial]["rawTouchTracks"])>1:
+            elif len(HScroll_GraphData[iTrial]["tracks"])>1:
                 HPanMulti=HPanMulti+1
 
         for iTrial in range(len(VScroll_GraphData)):
             
-            if len(VScroll_GraphData[iTrial]["rawTouchTracks"])==1:
+            if len(VScroll_GraphData[iTrial]["tracks"])==1:
                 VPanSingle=VPanSingle+1
-            elif len(VScroll_GraphData[iTrial]["rawTouchTracks"])>1:
+            elif len(VScroll_GraphData[iTrial]["tracks"])>1:
                 VPanMulti=VPanMulti+1
 
 
@@ -2710,17 +2635,17 @@ def TappingMultiTouch():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
         MultiTouchCount=0
         for iTrial in range(len(Tap_GraphData)):
             Alltimestamp=list()
             BeganTime=list()
             EndedTime=list()
-            for iFinger in range(len(Tap_GraphData[iTrial]["rawTouchTracks"])):
+            for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
             
-                for iPoint in range(len(Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                    t=Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']
-                    phase=Tap_GraphData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['phase']
+                for iPoint in range(len(Tap_GraphData[iTrial]["tracks"][iFinger]["touches"])):
+                    t=Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']
+                    phase=Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][iPoint]['phase']
                     if phase=='began':
                         BeganTime.append(t)
                         Alltimestamp.append(t+0.00002)
@@ -2975,10 +2900,10 @@ def AnalyzeError():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapError,labels=Analyzing2(Tap_GraphData)
 
@@ -3024,26 +2949,6 @@ def AnalyzeError():
                 fig.add_subplot(ax)
 
 
-                # ax = plt.Subplot(fig, inner[j])
-                # ax.set_title("User"+str(iUser)+" Tap")
-                
-                # cmap = plt.get_cmap("tab20c")
-
-                # outer_colors = cmap([0,3])
-                # inner_colors = cmap(np.array([9, 10, 11, 12, 13, 14,15,16]))
-                # if iUser==0:
-                #     if j==0:
-                #         ax.legend(labels=labels)
-
-                # ax.pie(Tapvals.sum(axis=1), radius=1, colors=outer_colors,
-                #        wedgeprops=dict(width=size, edgecolor='w'))
-
-                # ax.pie(Tapvals.flatten(), radius=1-size, colors=inner_colors,
-                #        wedgeprops=dict(width=size, edgecolor='w'))
-
-                # #ax.set(aspect="equal", title='Pie plot with `ax.pie`')
-                # fig.add_subplot(ax)
-
             elif j==1:
 
 
@@ -3057,25 +2962,6 @@ def AnalyzeError():
                 
                 fig.add_subplot(ax)
 
-
-                # ax = plt.Subplot(fig, inner[j])
-                # ax.set_title("User"+str(iUser)+" Pan")
-               
-                # cmap = plt.get_cmap("tab20c")
-                # outer_colors = cmap([0,3])
-                # inner_colors = cmap(np.array([9, 10, 11, 12, 13, 14,15,16]))
-
-                # ax.pie(Panvals.sum(axis=1), radius=1, colors=outer_colors,
-                #        wedgeprops=dict(width=size, edgecolor='w'))
-
-                # ax.pie(Panvals.flatten(), radius=1-size, colors=inner_colors,
-                #        wedgeprops=dict(width=size, edgecolor='w'))
-
-                # #ax.set(aspect="equal", title='Pie plot with `ax.pie`')
-                # fig.add_subplot(ax)
-
-
-        #plt.pie(TapError,explode=explode_Tap,labels=labels)
 
     plt.show()
 
@@ -3324,35 +3210,20 @@ def AnalyzeErrorOneTask(task):
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
-        if task=='tapTask':
+        if task=='tap':
             TapError,labels=Analyzing2(Tap_GraphData)
-        elif task=='swipeTask':
+        elif task=='swipe':
             TapError,labels=Analyzing2(Swipe_GraphData)
-        elif task=='horizontalScrollTask':
+        elif task=='horizontalScroll':
             TapError,labels=Analyzing2(HScroll_GraphData)
-        elif task=='verticalScrollTask':
+        elif task=='verticalScroll':
             TapError,labels=Analyzing2(VScroll_GraphData)
 
-        # #TapError,labels=Analyzing2(Tap_GraphData)
-        # TapError,labels=Analyzing2(VScroll_GraphData)
-
-        # Tapvals = np.array([[TapError[0], TapError[1],0,0,0,0,0,0],[0,0,TapError[2], TapError[3],TapError[4], TapError[5],TapError[6], TapError[7]]])
-
-
-        
-        # print("User",User," Tap Trial ",len(Tap_GraphData))
-        # AllPanError=np.zeros(len(TapError))
-        # # for i in range(len(TapError)):
-        # #     AllPanError[i]=SwipeError[i]+HScrollError[i]+VScrollError[i]
-
-        # Panvals = np.array([[0,0,AllPanError[2], AllPanError[3],0,0,0,0],[AllPanError[0], AllPanError[1],0,0,AllPanError[4], AllPanError[5],AllPanError[6],AllPanError[7]]])
-
-        #labels=['OneTap','TwoTap','ThreeMoreTap','TapScroll','OneScroll','TwoMoreScroll','NoEvent','OtherEvents']
         explode_Tap=np.zeros(len(TapError))
         explode_Pan=np.zeros(len(TapError))
 
@@ -3605,10 +3476,10 @@ def AnalyzeError_AllUser():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         TapError,labels=Analyzing2(Tap_GraphData)
 
@@ -3685,8 +3556,8 @@ def AnalysisTapTask(Trial):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -3703,13 +3574,13 @@ def AnalysisTapTask(Trial):
         AllFinger_PositionY=list()
         rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         ax3.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                #if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                #if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -3745,7 +3616,7 @@ def AnalysisTapTask(Trial):
     GraphData=ReadData(path,file)
     trial=1
     Device_info=GraphData[0]['deviceInfo']['screenSize']
-    GraphData=GraphData[0]['tapTask']['trials'][trial]
+    GraphData=GraphData[0]['tap']['trials'][trial]
 
 
     ####
@@ -3888,18 +3759,18 @@ def PanTapOneFinger():
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
-        Tap_GraphData=GraphData[0]['tapTask']['trials']
-        Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-        HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-        VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+        Tap_GraphData=GraphData[0]['tap']['trials']
+        Swipe_GraphData=GraphData[0]['swipe']['trials']
+        HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+        VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
         for iTrial in range(len(Tap_GraphData)):
-            if (len(Tap_GraphData[iTrial]["rawTouchTracks"]))==1:
+            if (len(Tap_GraphData[iTrial]["tracks"]))==1:
                 if len(Tap_GraphData[iTrial]['tapEvents'])>0:
                     if Tap_GraphData[iTrial]['tapEvents'][len(Tap_GraphData[iTrial]['tapEvents'])-1]['state']=='ended':
                         if len(Tap_GraphData[iTrial]['panEvents'])>0:
                             if Tap_GraphData[iTrial]['panEvents'][len(Tap_GraphData[iTrial]['panEvents'])-1]['state']=='ended':
-                                print(User,iTrial,len(Tap_GraphData[iTrial]["rawTouchTracks"]),len(Tap_GraphData[iTrial]['tapEvents']),len(Tap_GraphData[iTrial]['panEvents']),"Tap and Pan")
+                                print(User,iTrial,len(Tap_GraphData[iTrial]["tracks"]),len(Tap_GraphData[iTrial]['tapEvents']),len(Tap_GraphData[iTrial]['panEvents']),"Tap and Pan")
 
 
 
@@ -3960,8 +3831,8 @@ def PanTaskFailure(User,task ,Trial):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         #TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         #TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -3989,23 +3860,23 @@ def PanTaskFailure(User,task ,Trial):
         MinX=1000000000000
         MaxY=-1000000000000
         MinY=1000000000000
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                # if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                # if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
-                    if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]<MinX:
-                        MinX=TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]
-                    if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]>MaxX:
-                        MaxX=TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]
+                    if TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0]<MinX:
+                        MinX=TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0]
+                    if TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0]>MaxX:
+                        MaxX=TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0]
 
-                    if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]<MinY:
-                        MinY=TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]
-                    if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]>MaxY:
-                        MaxY=TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]
+                    if TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1]<MinY:
+                        MinY=TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1]
+                    if TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1]>MaxY:
+                        MaxY=TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1]
 
 
 
@@ -4110,22 +3981,22 @@ def PanTaskFailure(User,task ,Trial):
     GraphData=ReadData(path,file)
 
     Device_info=GraphData[0]['deviceInfo']['screenSize']
-    Tap_GraphData=GraphData[0]['tapTask']['trials']
-    Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-    HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-    VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+    Tap_GraphData=GraphData[0]['tap']['trials']
+    Swipe_GraphData=GraphData[0]['swipe']['trials']
+    HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+    VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
 
    
    
 
-    if task=='swipeTask':
+    if task=='swipe':
         TaskData=Swipe_GraphData[Trial]
 
-    elif task=='verticalScrollTask':
+    elif task=='verticalScroll':
 
         TaskData=VScroll_GraphData[Trial]
-    elif task=='horizontalScrollTask':
+    elif task=='horizontalScroll':
 
         TaskData=HScroll_GraphData[Trial]
 
@@ -4139,9 +4010,9 @@ def TapOptimizer_Analysis(User,Trial,stage):
     import matplotlib.patches as patches
     import matplotlib.gridspec as gridspec
     def LabelAllTrue(TaskData):
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+        for iFinger in range(len(TaskData["tracks"])):
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                    TaskData["tracks"][iFinger]["touches"][iPoint]['label']=True
 
         return TaskData
     def DrawScroll(TaskData):
@@ -4152,8 +4023,8 @@ def TapOptimizer_Analysis(User,Trial,stage):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         #TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         #TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -4176,13 +4047,13 @@ def TapOptimizer_Analysis(User,Trial,stage):
         AllFinger_PositionY=list()
         #rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         #ax1.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                # if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                # if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -4200,8 +4071,8 @@ def TapOptimizer_Analysis(User,Trial,stage):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -4224,13 +4095,13 @@ def TapOptimizer_Analysis(User,Trial,stage):
         AllFinger_PositionY=list()
         rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         ax3.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -4280,10 +4151,10 @@ def TapOptimizer_Analysis(User,Trial,stage):
     GraphData=ReadData(path,file)
 
     Device_info=GraphData[0]['deviceInfo']['screenSize']
-    Tap_GraphData=GraphData[0]['tapTask']['trials']
-    Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-    HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-    VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+    Tap_GraphData=GraphData[0]['tap']['trials']
+    Swipe_GraphData=GraphData[0]['swipe']['trials']
+    HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+    VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
     
     task='tap'
@@ -4310,9 +4181,9 @@ def TapTaskFailure(User,Trial):
     import matplotlib.patches as patches
     import matplotlib.gridspec as gridspec
     def LabelAllTrue(TaskData):
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+        for iFinger in range(len(TaskData["tracks"])):
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                    TaskData["tracks"][iFinger]["touches"][iPoint]['label']=True
 
         return TaskData
     def DrawScroll(TaskData):
@@ -4323,8 +4194,8 @@ def TapTaskFailure(User,Trial):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         #TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         #TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -4347,13 +4218,13 @@ def TapTaskFailure(User,Trial):
         AllFinger_PositionY=list()
         #rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         #ax1.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                # if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                # if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -4371,8 +4242,8 @@ def TapTaskFailure(User,Trial):
 
         AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
 
-        firstPointX=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][0]
-        firstPointY=TaskData["rawTouchTracks"][0]["rawTouches"][0]['location'][1]
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
         
@@ -4395,13 +4266,13 @@ def TapTaskFailure(User,Trial):
         AllFinger_PositionY=list()
         rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
         ax3.add_patch(rect)
-        for iFinger in range(len(TaskData["rawTouchTracks"])):
+        for iFinger in range(len(TaskData["tracks"])):
             AllFinger_PositionX.append([])
             AllFinger_PositionY.append([])
-            for iPoint in range(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                if TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    AllFinger_PositionX[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                    AllFinger_PositionY[iFinger].append(TaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
 
 
         for iFinger in range(len(AllFinger_PositionX)):
@@ -4451,10 +4322,10 @@ def TapTaskFailure(User,Trial):
     GraphData=ReadData(path,file)
 
     Device_info=GraphData[0]['deviceInfo']['screenSize']
-    Tap_GraphData=GraphData[0]['tapTask']['trials']
-    Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-    HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-    VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+    Tap_GraphData=GraphData[0]['tap']['trials']
+    Swipe_GraphData=GraphData[0]['swipe']['trials']
+    HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+    VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
     
     task='tap'
@@ -4481,7 +4352,7 @@ def KinematicsFeatures():
     AllUserY=list()
     AllUserZ=list()
     #for User in ['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012']:
-    for task in ['tapTask','swipeTask','horizontalScrollTask','verticalScrollTask']:
+    for task in ['tap','swipe','horizontalScroll','verticalScroll']:
 
 
        
@@ -4489,7 +4360,7 @@ def KinematicsFeatures():
         AllDataX=list()
         AllDataY=list()
         AllDataZ=list()
-        #for task in ['tapTask','swipeTask','horizontalScrollTask','verticalScrollTask']:
+        #for task in ['tap','swipe','horizontalScroll','verticalScroll']:
         for User in ['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012']:
             path='StudyData/NewData/'+User+'/'
 
@@ -4502,10 +4373,10 @@ def KinematicsFeatures():
             GraphData=ReadData(path,file)
 
             Device_info=GraphData[0]['deviceInfo']['screenSize']
-            Tap_GraphData=GraphData[0]['tapTask']['trials']
-            Swipe_GraphData=GraphData[0]['swipeTask']['trials']
-            HScroll_GraphData=GraphData[0]['horizontalScrollTask']['trials']
-            VScroll_GraphData=GraphData[0]['verticalScrollTask']['trials']
+            Tap_GraphData=GraphData[0]['tap']['trials']
+            Swipe_GraphData=GraphData[0]['swipe']['trials']
+            HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+            VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
             import matplotlib.pyplot as plt
             PlotData=GraphData[0]
@@ -4516,15 +4387,15 @@ def KinematicsFeatures():
                 DataX_IneachTrial=list()
                 DataY_IneachTrial=list()
                 DataZ_IneachTrial=list()
-                for iFinger in range(len(PlotData[task]['trials'][iTrial]["rawTouchTracks"])):
-                    #DataX=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                    #DataY=np.zeros(len(TaskData["rawTouchTracks"][i]["rawTouches"]))
-                    if len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])>2:
-                        for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                            Point_t=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-                            Point_t_1=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]
-                            Point_t_2=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]
-                            Point_t_3=PlotData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]
+                for iFinger in range(len(PlotData[task]['trials'][iTrial]["tracks"])):
+                    #DataX=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                    #DataY=np.zeros(len(TaskData["tracks"][i]["touches"]))
+                    if len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])>2:
+                        for iPoint in range(3,len(PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"])):
+                            Point_t=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]
+                            Point_t_1=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]
+                            Point_t_2=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-2]
+                            Point_t_3=PlotData[task]['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-3]
                             X0=Point_t['location'][0]
                             Y0=Point_t['location'][1]
                             T0=Point_t['timestamp']
@@ -4612,7 +4483,7 @@ def KinematicsFeatures():
             plt.ylabel("Jerk (points/ms^3)")
         plt.ylim(0,20)
     plt.show()
-    #print(len(GraphData[0]['tapTask']['trials']))
+    #print(len(GraphData[0]['tap']['trials']))
     #PlotAllJerk(GraphData[0])
 
 
@@ -4642,12 +4513,12 @@ from keras.models import Sequential, model_from_json
 
 #####
 #AnalyzeError_AllUser()
-#AnalyzeErrorOneTask('horizontalScrollTask')
+#AnalyzeErrorOneTask('horizontalScroll')
 #TapTaskFailure('3010',10)
 
 #TapOptimizer_Analysis('3010',10,6)
 
-#PanTaskFailure('3011','verticalScrollTask' ,2)
+#PanTaskFailure('3011','verticalScroll' ,2)
 
 
 #DurationDiscreteGesture_v1()
@@ -4699,7 +4570,7 @@ from keras.models import Sequential, model_from_json
 #TapMovement()
 
 #SurveyThreshold()
-# print(len(GraphData[0]['tapTask']['trials']))
+# print(len(GraphData[0]['tap']['trials']))
 # PlotAllJerk(GraphData[0])
 
 # #Tap
