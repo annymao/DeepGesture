@@ -52,13 +52,13 @@ def PredictAngleModel(TrainingData,Device_info):
         #print(TargetX,TargetY ,Device_info[0]/2,Device_info[1]/2,pltcolor)
         #if tv.TapTask(TrainingData['tapTask']['trials'][iTrial],iTrial)==True:
         if True==True:
-            for iFinger in range(len(TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"])):
-                Point_0_location=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['location']
-                for iPoint in range(1,len(TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])): 
+            for iFinger in range(len(TrainingData['tapTask']['trials'][iTrial]["tracks"])):
+                Point_0_location=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][0]['location']
+                for iPoint in range(1,len(TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"])): 
                     
-                    Point_t_location=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location']
-                    Point_t_1_location=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['previousLocation']
-                    Point_t_2_location=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]['previousLocation']
+                    Point_t_location=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]['location']
+                    Point_t_1_location=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]['previousLocation']
+                    Point_t_2_location=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint-1]['previousLocation']
                     
                     dx=Point_t_location[0]-TargetX
                     dy=Point_t_location[1]-TargetY
@@ -144,22 +144,22 @@ def FilteredJson(InputTaskData):
         
         FilterDataDict=dict()
         FilterData=list()
-        for iFinger in range(len(InputTaskData[iTrial]["rawTouchTracks"])):
+        for iFinger in range(len(InputTaskData[iTrial]["tracks"])):
             EachFinger=list()
-            for iPoint in range(len(InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                if InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    EachFinger.append(InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint])
+            for iPoint in range(len(InputTaskData[iTrial]["tracks"][iFinger]["touches"])):
+                if InputTaskData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    EachFinger.append(InputTaskData[iTrial]["tracks"][iFinger]["touches"][iPoint])
                     
             
             if len(EachFinger)!=0:
-                EachFingerDict={'rawTouches':EachFinger}
+                EachFingerDict={'touches':EachFinger}
                 FilterData.append(EachFingerDict)
         
-        FilterDataDict={'rawTouchTracks':FilterData,'targetFrame':InputTaskData[iTrial]["targetFrame"]}
+        FilterDataDict={'tracks':FilterData,'targetFrame':InputTaskData[iTrial]["targetFrame"]}
         FinalTaskData.append(FilterDataDict) 
     return FinalTaskData
 def LabelFalse(InputTaskData,iTrial,iFinger,iPoint):
-    InputTaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=False
+    InputTaskData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']=False
 
 def LabelByHuman(myTask,Device_info):
     import sklearn
@@ -173,32 +173,32 @@ def LabelByHuman(myTask,Device_info):
         ReferFingerIndex=0
         PointsAfterCluster=0;
         CandidateDataInFinger=list()
-        for iFinger in range(len(OutputData[iTrial]["rawTouchTracks"])):
+        for iFinger in range(len(OutputData[iTrial]["tracks"])):
             
             CandidateData=list()
-            for iPoint in range(len(OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
+            for iPoint in range(len(OutputData[iTrial]["tracks"][iFinger]["touches"])):
                  
                  TargetX=OutputData[iTrial]["targetFrame"][0][0]+ OutputData[iTrial]["targetFrame"][1][0]*0.5
                  TargetY=OutputData[iTrial]["targetFrame"][0][1]+ OutputData[iTrial]["targetFrame"][1][1]*0.5
                  
-#                 if (abs(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0] - TargetX) > myTask[iTrial]["targetFrame"][1][0]*0.5)|(abs(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1] - TargetY) > myTask[iTrial]["targetFrame"][1][1]*0.5):
+#                 if (abs(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0] - TargetX) > myTask[iTrial]["targetFrame"][1][0]*0.5)|(abs(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1] - TargetY) > myTask[iTrial]["targetFrame"][1][1]*0.5):
 #                     LabelFalse(myTask,TestTrial,iFinger,iPoint)
 #                 
                  
                  if iPoint==0 or iPoint==1:
                      accelerate=0
                  else:
-                     positionX1=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                     positionY1=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                     positionT1=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
+                     positionX1=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                     positionY1=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
+                     positionT1=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
                      
-                     positionX2=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                     positionY2=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                     positionT2=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
+                     positionX2=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                     positionY2=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
+                     positionT2=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
                      
-                     positionX3=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                     positionY3=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                     positionT3=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
+                     positionX3=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                     positionY3=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
+                     positionT3=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["timestamp"]
                      
                      V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
                      V2=np.sqrt((positionX3-positionX2)*(positionX3-positionX2)+(positionY3-positionY2)*(positionY3-positionY2))/(positionT3-positionT2)
@@ -208,14 +208,14 @@ def LabelByHuman(myTask,Device_info):
                  if accelerate>0:
                      LabelFalse(OutputData,TestTrial,iFinger,iPoint)
                  if iPoint!=0 & iPoint!=1: 
-                     positionX1=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
-                     positionY1=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
+                     positionX1=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][0]
+                     positionY1=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][1]
                      
-                     positionX2=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]
-                     positionY2=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]
+                     positionX2=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][0]
+                     positionY2=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][1]
                      
-                     positionX3=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                     positionY3=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
+                     positionX3=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                     positionY3=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1]
                     
                      AverageX1=np.mean([positionX2,positionX3])
                      AverageY1=np.mean([positionY2,positionY3])
@@ -227,14 +227,14 @@ def LabelByHuman(myTask,Device_info):
                      
                      if (AverageX2-positionX3)*(AverageX2-positionX3)+(AverageY2-positionY3)*(AverageY2-positionY3)>TapAllowableMovement*TapAllowableMovement:
                          LabelFalse(OutputData,TestTrial,iFinger,iPoint) 
-                 if OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                      positionx=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                      positiony=OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
+                 if OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                      positionx=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                      positiony=OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1]
                       #AllData.append([timestamp,previousLocationX,previousLocationY,majorRadius,locationX,locationY])
 
                       CandidateData.append([iPoint,positionx,positiony])
-            for iPoint in range(len(OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                if OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+            for iPoint in range(len(OutputData[iTrial]["tracks"][iFinger]["touches"])):
+                if OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     CandidateDataInFinger.append([iFinger,iPoint])
             if len(CandidateData)>1:
                 maxScore=0
@@ -283,17 +283,17 @@ def LabelByHuman(myTask,Device_info):
                     if distance<=Distance:
                         Distance=distance
                         SelectedPoint=ThisClusterFinalPoint[i][0]
-                OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][SelectedPoint]['label']=True
+                OutputData[iTrial]["tracks"][iFinger]["touches"][SelectedPoint]['label']=True
         ####最後解決ｍｕlti fingers
 #        CandidateDataInFinger=list()
-#        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-#            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-#                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+#        for iFinger in range(len(myTask[iTrial]["tracks"])):
+#            for iPoint in range(len(myTask[iTrial]["tracks"][iFinger]["touches"])):
+#                if myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
 #                    CandidateDataInFinger.append([iFinger,iPoint])
         DataPointNum=0
-        for iFinger in range(len(OutputData[iTrial]["rawTouchTracks"])):
-            for iPoint in range(len(OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                 if OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+        for iFinger in range(len(OutputData[iTrial]["tracks"])):
+            for iPoint in range(len(OutputData[iTrial]["tracks"][iFinger]["touches"])):
+                 if OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     DataPointNum=DataPointNum+1
                     
         if len(CandidateDataInFinger)>1:
@@ -309,9 +309,9 @@ def LabelByHuman(myTask,Device_info):
 def LabelAllTrue(InputData):
     OutputData=InputData
     for iTrial in range(len(InputData)):
-        for iFinger in range(len(InputData[iTrial]["rawTouchTracks"])):
-            for iPoint in range(len(InputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+        for iFinger in range(len(InputData[iTrial]["tracks"])):
+            for iPoint in range(len(InputData[iTrial]["tracks"][iFinger]["touches"])): 
+                    OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']=True
     return OutputData
 
 def Gaussian2DModel(TrainingData,Device_info):
@@ -333,12 +333,12 @@ def Gaussian2DModel(TrainingData,Device_info):
                     
         if tv.TapTask(TrainingData['tapTask']['trials'][iTrial],iTrial)==True:
         #if True==True:
-            for iFinger in range(len(TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"])):
-                for iPoint in range(len(TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    #if TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+            for iFinger in range(len(TrainingData['tapTask']['trials'][iTrial]["tracks"])):
+                for iPoint in range(len(TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"])): 
+                    #if TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     if True==True:
-                        dx=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]-TargetX
-                        dy=TrainingData['tapTask']['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]-TargetY
+                        dx=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][0]-TargetX
+                        dy=TrainingData['tapTask']['trials'][iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][1]-TargetY
                         if (abs(dx)<100.0)& (abs(dy)<100.0):
                             OffsetX.append(dx)
                             OffsetY.append(dy)
@@ -352,10 +352,10 @@ def AdjustLocation(InputData,xmean,ymean):
 
     OutputData=InputData
     for iTrial in range(len(InputData)):
-        for iFinger in range(len(InputData[iTrial]["rawTouchTracks"])):
-            for iPoint in range(len(InputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]=InputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0]-xmean
-                OutputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]=InputData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1]-ymean
+        for iFinger in range(len(InputData[iTrial]["tracks"])):
+            for iPoint in range(len(InputData[iTrial]["tracks"][iFinger]["touches"])):
+                OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][0]=InputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][0]-xmean
+                OutputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][1]=InputData[iTrial]["tracks"][iFinger]["touches"][iPoint]['location'][1]-ymean
     
     return OutputData
 
@@ -365,36 +365,36 @@ def LabelByPersonalTouch(myTask,Device_info,HD,TA,IG,IG_state,AT,JerkT):
     for TestTrial in range(len(myTask)):
         iTrial=TestTrial
         
-        if len(myTask[iTrial]["rawTouchTracks"])>0:
+        if len(myTask[iTrial]["tracks"])>0:
             EarliestTimeStamp=9999999999999999999999999999999999999
-            EachFingerTime=np.zeros((len(myTask[iTrial]["rawTouchTracks"]),2))
-            #print(len(myTask[iTrial]["rawTouchTracks"]))
-            for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                EarliestTimeStamp=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                EachFingerTime[iFinger][0]=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                EachFingerTime[iFinger][1]=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']
+            EachFingerTime=np.zeros((len(myTask[iTrial]["tracks"]),2))
+            #print(len(myTask[iTrial]["tracks"]))
+            for iFinger in range(len(myTask[iTrial]["tracks"])):
+                EarliestTimeStamp=myTask[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                EachFingerTime[iFinger][0]=myTask[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                EachFingerTime[iFinger][1]=myTask[iTrial]["tracks"][iFinger]["touches"][len(myTask[iTrial]["tracks"][iFinger]["touches"])-1]['timestamp']
             #print(EachFingerTime)
             EarliestTimeStamp=np.min(EachFingerTime[:][0])
             #EarliestEndTimeStamp=np.min(EachFingerTime[:][1])
             TA_EarliestTimeStamp=999999999999999999999999999
-            for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                    if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']<EarliestTimeStamp+HD:
+            for iFinger in range(len(myTask[iTrial]["tracks"])):
+                for iPoint in range(len(myTask[iTrial]["tracks"][iFinger]["touches"])):
+                    if myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']<EarliestTimeStamp+HD:
                         LabelFalse(myTask,TestTrial,iFinger,iPoint)
                         
-                    elif (myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']>EarliestTimeStamp+HD)&(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']<EarliestTimeStamp+HD+TA):
-                        if TA_EarliestTimeStamp>myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']:
-                            TA_EarliestTimeStamp=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']
+                    elif (myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']>EarliestTimeStamp+HD)&(myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']<EarliestTimeStamp+HD+TA):
+                        if TA_EarliestTimeStamp>myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']:
+                            TA_EarliestTimeStamp=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']
                         if IG_state==1:  #最初位置
-                            if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']!=TA_EarliestTimeStamp:
+                            if myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']!=TA_EarliestTimeStamp:
                                 LabelFalse(myTask,TestTrial,iFinger,iPoint)
                         elif IG_state==2:
                             LabelFalse(myTask,TestTrial,iFinger,iPoint)
-                            if iPoint==len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])-1:
-                                myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]['label']=True
+                            if iPoint==len(myTask[iTrial]["tracks"][iFinger]["touches"])-1:
+                                myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]['label']=True
                     else:
                         if IG_state==2:
-                            myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]['label']=True
+                            myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]['label']=True
                         
                         #整個螢幕都沒有 才觸發IG
                         TriggerIG=True
@@ -404,22 +404,22 @@ def LabelByPersonalTouch(myTask,Device_info,HD,TA,IG,IG_state,AT,JerkT):
                         if TriggerIG==True:
                             if(iFinger>0):
                                 LastEndStamp=np.min(EachFingerTime.transpose(1,0)[1][range(iFinger)])
-                                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['timestamp']<LastEndStamp+IG:
+                                if myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['timestamp']<LastEndStamp+IG:
                                     LabelFalse(myTask,TestTrial,iFinger,iPoint)
 
                     if AT!=0:
                         if iPoint==3:
-                            positionX1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                            positionY1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                            positionT1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
+                            positionX1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                            positionY1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
+                            positionT1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
                              
-                            positionX2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                            positionY2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                            positionT2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
+                            positionX2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                            positionY2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
+                            positionT2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
                              
-                            positionX3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                            positionY3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                            positionT3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
+                            positionX3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                            positionY3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
+                            positionT3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["timestamp"]
                              
                             V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
                             V2=np.sqrt((positionX3-positionX2)*(positionX3-positionX2)+(positionY3-positionY2)*(positionY3-positionY2))/(positionT3-positionT2)
@@ -429,21 +429,21 @@ def LabelByPersonalTouch(myTask,Device_info,HD,TA,IG,IG_state,AT,JerkT):
                                 LabelFalse(myTask,TestTrial,iFinger,iPoint)
                     if JerkT!=0:
                         if iPoint>3:
-                            positionX0=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][0]/Device_info[0]
-                            positionY0=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["location"][1]/Device_info[1]
-                            positionT0=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-3]["timestamp"]
+                            positionX0=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-3]["location"][0]/Device_info[0]
+                            positionY0=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-3]["location"][1]/Device_info[1]
+                            positionT0=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-3]["timestamp"]
 
-                            positionX1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                            positionY1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                            positionT1=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
+                            positionX1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][0]/Device_info[0]
+                            positionY1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["location"][1]/Device_info[1]
+                            positionT1=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
                              
-                            positionX2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                            positionY2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                            positionT2=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
+                            positionX2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][0]/Device_info[0]
+                            positionY2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["location"][1]/Device_info[1]
+                            positionT2=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
                              
-                            positionX3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                            positionY3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                            positionT3=myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
+                            positionX3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][0]/Device_info[0]
+                            positionY3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["location"][1]/Device_info[1]
+                            positionT3=myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]["timestamp"]
                              
                             V0=np.sqrt((positionX1-positionX0)*(positionX1-positionX0)+(positionY1-positionY0)*(positionY1-positionY0))/(positionT1-positionT0) 
                             V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
@@ -462,17 +462,17 @@ def LabelByPersonalTouch(myTask,Device_info,HD,TA,IG,IG_state,AT,JerkT):
                     
 
                     
-                    
+#### ANNY-NOTE: Called in Graph.py                    
 def TapOptimizer_Graph(TaskData,Step):
     def LabelTrue(InputData):
         OutputData=InputData
-        for iFinger in range(len(InputData["rawTouchTracks"])):
-            for iPoint in range(len(InputData["rawTouchTracks"][iFinger]["rawTouches"])): 
-                    OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=True
+        for iFinger in range(len(InputData["tracks"])):
+            for iPoint in range(len(InputData["tracks"][iFinger]["touches"])): 
+                    OutputData["tracks"][iFinger]["touches"][iPoint]['label']=True
         return OutputData
 
     def LabelFalse(InputTaskData,iFinger,iPoint):
-        InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']=False
+        InputTaskData["tracks"][iFinger]["touches"][iPoint]['label']=False
 
 
     def LabelByMyAlgorithm(myTask):
@@ -487,38 +487,28 @@ def TapOptimizer_Graph(TaskData,Step):
         ReferFingerIndex=0
         PointsAfterCluster=0;
         CandidateDataInFinger=list()
-        for iFinger in range(len(OutputData["rawTouchTracks"])):
+        for iFinger in range(len(OutputData["tracks"])):
             
             CandidateData=list()
-            for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
+            for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
                  
                  if iPoint==0 or iPoint==1:
                      accelerate=0
                  else:
-                     # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                     # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                     # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
+                     ## ANNY-NOTE: calculate accelerate (delta of velocity)
+                     ## p1,p2 -> v1 & p2,p3 -> v2
+                     ## a = v2-v1 (for better result)
+                     positionX1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][0]
+                     positionY1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][1]
+                     positionT1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["timestamp"]
                      
-                     # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                     # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                     # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
+                     positionX2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][0]
+                     positionY2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][1]
+                     positionT2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"]
                      
-                     # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                     # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                     # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-
-
-                     positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
-                     positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
-                     positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                     
-                     positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]
-                     positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]
-                     positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                     
-                     positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                     positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
-                     positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
+                     positionX3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                     positionY3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]
+                     positionT3=OutputData["tracks"][iFinger]["touches"][iPoint]["timestamp"]
                      
                      
                      V1=np.sqrt((positionX2-positionX1)*(positionX2-positionX1)+(positionY2-positionY1)*(positionY2-positionY1))/(positionT2-positionT1)
@@ -530,14 +520,14 @@ def TapOptimizer_Graph(TaskData,Step):
                      if Step>1:
                         LabelFalse(OutputData,iFinger,iPoint)
                  if iPoint!=0 & iPoint!=1: 
-                     positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
-                     positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
+                     positionX1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][0]
+                     positionY1=OutputData["tracks"][iFinger]["touches"][iPoint-2]["location"][1]
                      
-                     positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]
-                     positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]
+                     positionX2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][0]
+                     positionY2=OutputData["tracks"][iFinger]["touches"][iPoint-1]["location"][1]
                      
-                     positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                     positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
+                     positionX3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                     positionY3=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]
                     
                      AverageX1=np.mean([positionX2,positionX3])
                      AverageY1=np.mean([positionY2,positionY3])
@@ -551,14 +541,14 @@ def TapOptimizer_Graph(TaskData,Step):
                      if (AverageX2-positionX3)*(AverageX2-positionX3)+(AverageY2-positionY3)*(AverageY2-positionY3)>TapAllowableMovement*TapAllowableMovement:
                          if Step>2:
                             LabelFalse(OutputData,iFinger,iPoint) 
-                 if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                      positionx=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]
-                      positiony=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]
+                 if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                      positionx=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][0]
+                      positiony=OutputData["tracks"][iFinger]["touches"][iPoint]["location"][1]
                       #AllData.append([timestamp,previousLocationX,previousLocationY,majorRadius,locationX,locationY])
 
                       CandidateData.append([iPoint,positionx,positiony])
-            for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+            for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
+                if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     CandidateDataInFinger.append([iFinger,iPoint])
             if len(CandidateData)>1:
                 maxScore=0
@@ -609,18 +599,18 @@ def TapOptimizer_Graph(TaskData,Step):
                     if distance<=Distance:
                         Distance=distance
                         SelectedPoint=ThisClusterFinalPoint[i][0]
-                OutputData["rawTouchTracks"][iFinger]["rawTouches"][SelectedPoint]['label']=True
+                OutputData["tracks"][iFinger]["touches"][SelectedPoint]['label']=True
         ####最後解決ｍｕlti fingers
 #        CandidateDataInFinger=list()
-#        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-#            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-#                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+#        for iFinger in range(len(myTask[iTrial]["tracks"])):
+#            for iPoint in range(len(myTask[iTrial]["tracks"][iFinger]["touches"])):
+#                if myTask[iTrial]["tracks"][iFinger]["touches"][iPoint]['label']==True:
 #                    CandidateDataInFinger.append([iFinger,iPoint])
         
         DataPointNum=0
-        for iFinger in range(len(OutputData["rawTouchTracks"])):
-            for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                 if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+        for iFinger in range(len(OutputData["tracks"])):
+            for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
+                 if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     DataPointNum=DataPointNum+1
         
         if len(CandidateDataInFinger)>1:
@@ -640,19 +630,19 @@ def TapOptimizer_Graph(TaskData,Step):
 
        
 
-        for iFinger in range(len(OutputData["rawTouchTracks"])):
-            for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
+        for iFinger in range(len(OutputData["tracks"])):
+            for iPoint in range(len(OutputData["tracks"][iFinger]["touches"])):
 
-                 if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
+                 if OutputData["tracks"][iFinger]["touches"][iPoint]['label']==True:
                     print("remain",iFinger,iPoint)
-                    t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
+                    t=OutputData["tracks"][iFinger]["touches"][len(OutputData["tracks"][iFinger]["touches"])-1]['timestamp']- OutputData["tracks"][iFinger]["touches"][0]['timestamp']
                     if t>MaxTime:
                         if Step>5:
                             LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
                             MaxTime=t
                             FinalFinger=iFinger
                             FinalFingerPoint=iPoint
-                            OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
+                            OutputData["tracks"][FinalFinger]["touches"][FinalFingerPoint]['label']=True
                     else:
                         if Step>5:
                             LabelFalse(OutputData,iFinger,iPoint)
@@ -668,18 +658,18 @@ def TapOptimizer_Graph(TaskData,Step):
        
         FilterDataDict=dict()
         FilterData=list()
-        for iFinger in range(len(InputTaskData["rawTouchTracks"])):
+        for iFinger in range(len(InputTaskData["tracks"])):
             EachFinger=list()
-            for iPoint in range(len(InputTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-                if InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                    EachFinger.append(InputTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint])
+            for iPoint in range(len(InputTaskData["tracks"][iFinger]["touches"])):
+                if InputTaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    EachFinger.append(InputTaskData["tracks"][iFinger]["touches"][iPoint])
                     
             
             if len(EachFinger)!=0:
-                EachFingerDict={'rawTouches':EachFinger}
+                EachFingerDict={'touches':EachFinger}
                 FilterData.append(EachFingerDict)
         
-        FilterDataDict={'rawTouchTracks':FilterData,'targetFrame':InputTaskData["targetFrame"]}
+        FilterDataDict={'tracks':FilterData,'targetFrame':InputTaskData["targetFrame"]}
         
         return FilterDataDict
     import TaskSuccessVerify as tv

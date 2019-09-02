@@ -90,7 +90,7 @@ def LabelFalse(InputTaskData,iTrial,iFinger,iPoint):
 def ReadData(path_0,file_0):
     data = {}
     for i in range(len(file_0)):
-        with open(path_0+file_0[i]) as json_file: 
+        with open(path_0+file_0[i],encoding = 'utf8') as json_file: 
             
             data_0= json.load(json_file)
             
@@ -2363,7 +2363,7 @@ def OverView():
     import matplotlib.pyplot as plt
 
     User='3011'
-    path='StudyData/NewData/'+User+'/'
+    path='Data/'
 
     files=listdir(path)
     file=list()
@@ -2380,8 +2380,9 @@ def OverView():
     VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
     
-    task='pan'
-    for test in range(15,16):
+    task='tap'
+    print(len(Tap_GraphData))
+    for test in range(0,16):
        
         if task=='tap':
             TaskData=Tap_GraphData[test]
@@ -2392,17 +2393,17 @@ def OverView():
             LabelAllTrue(TaskData)
             
 
-            AfterFilterData,Success=tapopt.TapOptimizer_Graph(TaskData)
+            #AfterFilterData,Success=tapopt.TapOptimizer_Graph(TaskData)
             DrawTap(TaskData)
-            
-            print(Success)
-           
             plt.show()
+            #print(Success)
+           
+            
         else:
             TaskData=Swipe_GraphData[test]
             DrawScroll(TaskData)
             plt.show()
-
+    
 def ModelArchitecture(User,CrossValidationIndex,tGrid,Mode):
     def load_model(User,CrossValidationIndex,tGrid,Mode):
         if Mode=='Dynamic':
@@ -3542,7 +3543,7 @@ def AnalyzeError_AllUser():
 
 
             
-def AnalysisTapTask(Trial):
+def AnalysisTapTask():
     def DrawTap(TaskData,iUser,EventString):
         import numpy as np
         import matplotlib.patches as patches
@@ -3605,8 +3606,8 @@ def AnalysisTapTask(Trial):
         return OtherEvent
     iUser=9
     Userlist=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014','3015']
-    path='StudyData/NewData/'+Userlist[iUser]+'/'
-
+    #path='StudyData/NewData/'+Userlist[iUser]+'/'
+    path = 'Data/'
     files=listdir(path)
     file=list()
     for i in range(len(files)):
@@ -4108,11 +4109,15 @@ def TapOptimizer_Analysis(User,Trial,stage):
             TouchPoint=ax3.scatter(AllFinger_PositionX[iFinger],AllFinger_PositionY[iFinger],color=AllColor[iFinger])
 
         pan=None
-        for panevent in range(len(TaskData['panEvents'])):
+        #ANNY-NOTE: modified
+        for e in TaskData['events']:
+            if e['type']=='pan':
+                pan = ax3.scatter(e['location'][0],e['location'][1],color='purple',marker=r" ${}$ ".format(chr(10230)),label='pan event',s=150)
+        # for panevent in range(len(TaskData['panEvents'])):
 
-            # if panevent%3==0:
-            if True:
-                pan=ax3.scatter(TaskData['panEvents'][panevent]['location'][0],TaskData['panEvents'][panevent]['location'][1],color='purple',marker=r" ${}$ ".format(chr(10230)),label='pan event',s=150)
+        #     # if panevent%3==0:
+        #     if True:
+        #         pan=ax3.scatter(TaskData['panEvents'][panevent]['location'][0],TaskData['panEvents'][panevent]['location'][1],color='purple',marker=r" ${}$ ".format(chr(10230)),label='pan event',s=150)
                 
                 
         if pan!=None:
@@ -4140,8 +4145,8 @@ def TapOptimizer_Analysis(User,Trial,stage):
     import matplotlib.pyplot as plt
    
 
-    path='StudyData/NewData/'+User+'/'
-
+    #path='StudyData/NewData/'+User+'/'
+    path = 'Data/'
     files=listdir(path)
     file=list()
     for i in range(len(files)):
@@ -4511,12 +4516,13 @@ from keras.models import load_model
 from keras.models import Sequential, model_from_json
 
 
+#OverView()
 #####
 #AnalyzeError_AllUser()
 #AnalyzeErrorOneTask('horizontalScroll')
 #TapTaskFailure('3010',10)
 
-#TapOptimizer_Analysis('3010',10,6)
+TapOptimizer_Analysis('3010',0,6)
 
 #PanTaskFailure('3011','verticalScroll' ,2)
 

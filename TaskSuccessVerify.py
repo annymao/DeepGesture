@@ -24,13 +24,13 @@ SwipeMinimumVelocity = 300
 # def TaskThresholdClassification2(NewTaskData):
 #     ##0 no data ,1:tap. , 2:swipe.  3:pan
 #     ##數入的是單單純純的rawtouchdata
-#     FingerNum=len(NewTaskData["rawTouchTracks"]);
+#     FingerNum=len(NewTaskData["tracks"]);
 #     if(FingerNum<1):
 #         #print("No Finger")
 #         return 0
 #     noTouchPoint=True
-#     for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-#         touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+#     for iFinger in range(len(NewTaskData["tracks"])):
+#         touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
 #         if touchpointnum>0:
 #             noTouchPoint=False
 
@@ -38,45 +38,45 @@ SwipeMinimumVelocity = 300
 #         #print("No Touch Point")
 #         return 0
 
-#     for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-#         if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-#             TimeDuration=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
+#     for iFinger in range(len(NewTaskData["tracks"])):
+#         if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+#             TimeDuration=NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
 #             if TimeDuration>TapMaximumDuration:
 #                 return 3   #任何一個點大於門檻都為 scroll
 
-#     for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-#         if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-#             TimeDuration=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
-#         for touchPointIndex in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-#             dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-#             dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+#     for iFinger in range(len(NewTaskData["tracks"])):
+#         if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+#             TimeDuration=NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
+#         for touchPointIndex in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+#             dx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+#             dy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
 #             if dx*dx+dy*dy <=TapAllowableMovement*TapAllowableMovement:
 #                 if TimeDuration<=TapMaximumDuration:
 #                     return 1
 
 #     WhichFingerCanSwipe=np.zeros(FingerNum)
 #     Recognized=False
-#     for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-#         for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-#             if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>=SwipeMaximumDuration:
+#     for iFinger in range(len(NewTaskData["tracks"])):
+#         for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+#             if NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>=SwipeMaximumDuration:
 #                 if Recognized==False:
 #                     finalRecognizedDirection = "none";
 #                 continue
-#             PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-#             dx = PointPosition[0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-#             dy = PointPosition[1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+#             PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+#             dx = PointPosition[0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+#             dy = PointPosition[1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
             
 #             #print(dx * dx + dy * dy,"vs",SwipeMinimumMovement * SwipeMinimumMovement)
 #             if (dx * dx + dy * dy >= SwipeMinimumMovement * SwipeMinimumMovement):    
 #                 WhichFingerCanSwipe[iFinger] = True;
                     
 #             if WhichFingerCanSwipe[iFinger] ==True:
-#                 PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-#                 prePointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"]
+#                 PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+#                 prePointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"]
 #                 dx=PointPosition[0] - prePointPosition[0]
 #                 dy=PointPosition[1] - prePointPosition[1]
                 
-#                 dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"] -NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"];
+#                 dt=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"] -NewTaskData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"];
 #                 v=np.sqrt(dx * dx + dy * dy)/dt;
                 
 #                 if (abs(v) >= SwipeMinimumVelocity):
@@ -100,13 +100,13 @@ def TaskThresholdClassification(NewTaskData):
     SwipeMinimumVelocity = tv.SwipeMinimumVelocity;
     ##0 no data ,1:tap. , 2:swipe.  3:pan
     ##數入的是單單純純的rawtouchdata
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         #print("No Finger")
         return 0
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
 
@@ -114,12 +114,12 @@ def TaskThresholdClassification(NewTaskData):
         #print("No Touch Point")
         return 0
 
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-            TimeDuration=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
+    for iFinger in range(len(NewTaskData["tracks"])):
+        if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+            TimeDuration=NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
             if TimeDuration>TapMaximumDuration:
-                FinalPoint=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["location"]
-                InitialPoint=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"]
+                FinalPoint=NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["location"]
+                InitialPoint=NewTaskData["tracks"][iFinger]["touches"][0]["location"]
                 dx=FinalPoint[0]-InitialPoint[0]
                 dy=FinalPoint[1]-InitialPoint[1]
 
@@ -130,27 +130,27 @@ def TaskThresholdClassification(NewTaskData):
 
     WhichFingerCanSwipe=np.zeros(FingerNum)
     Recognized=False
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>=SwipeMaximumDuration:
+    for iFinger in range(len(NewTaskData["tracks"])):
+        for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            if NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>=SwipeMaximumDuration:
                 if Recognized==False:
                     finalRecognizedDirection = "none";
                 continue
-            PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-            dx = PointPosition[0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-            dy = PointPosition[1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+            PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+            dx = PointPosition[0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+            dy = PointPosition[1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
             
             #print(dx * dx + dy * dy,"vs",SwipeMinimumMovement * SwipeMinimumMovement)
             if (dx * dx + dy * dy >= SwipeMinimumMovement * SwipeMinimumMovement):    
                 WhichFingerCanSwipe[iFinger] = True;
                     
             if WhichFingerCanSwipe[iFinger] ==True:
-                PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-                prePointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"]
+                PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+                prePointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"]
                 dx=PointPosition[0] - prePointPosition[0]
                 dy=PointPosition[1] - prePointPosition[1]
                 
-                dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"] -NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"];
+                dt=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"] -NewTaskData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"];
                 v=np.sqrt(dx * dx + dy * dy)/dt;
                 
                 if (abs(v) >= SwipeMinimumVelocity):
@@ -158,12 +158,12 @@ def TaskThresholdClassification(NewTaskData):
                     return 2
     Tap_InCircle=True
     Tap_InTime=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-            TimeDuration=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
-        for touchPointIndex in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-            dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+    for iFinger in range(len(NewTaskData["tracks"])):
+        if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+            TimeDuration=NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
+        for touchPointIndex in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            dx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+            dy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
             if dx*dx+dy*dy >TapAllowableMovement*TapAllowableMovement:
                 TapInCircle=False
             if TimeDuration>TapMaximumDuration:
@@ -172,9 +172,9 @@ def TaskThresholdClassification(NewTaskData):
         return 1
 
 
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):     
-        FinalPoint=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][-1]["location"]
-        InitialPoint=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"]
+    for iFinger in range(len(NewTaskData["tracks"])):     
+        FinalPoint=NewTaskData["tracks"][iFinger]["touches"][-1]["location"]
+        InitialPoint=NewTaskData["tracks"][iFinger]["touches"][0]["location"]
         dx=FinalPoint[0]-InitialPoint[0]
         dy=FinalPoint[1]-InitialPoint[1]
 
@@ -219,20 +219,20 @@ def SimulationGestureRecognizer(NewTaskData):
     PointIndex=list()
     dX=0
     dY=0
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    for iFinger in range(len(NewTaskData["tracks"])):
 
-        for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            t=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-            dX=dX+NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]-NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][0]
-            dY=dY+NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]-NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][1]
+        for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            t=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+            dX=dX+NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]-NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][0]
+            dY=dY+NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]-NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][1]
             
             if iPoint==0:
                 FingerStartTime.append(t)
-                FingerStartPointX.append(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0])
-                FingerStartPointY.append(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1])
-                if len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])==1:
+                FingerStartPointX.append(NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0])
+                FingerStartPointY.append(NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1])
+                if len(NewTaskData["tracks"][iFinger]["touches"])==1:
                      FingerEndTime.append(t)
-            elif iPoint>=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1:
+            elif iPoint>=len(NewTaskData["tracks"][iFinger]["touches"])-1:
                 FingerEndTime.append(t)
             TimeData.append(t)
             FingerIndex.append(iFinger)
@@ -274,12 +274,12 @@ def SimulationGestureRecognizer(NewTaskData):
             for checkdataindex in range(len(FingerArray)):
                 iFinger=FingerArray[checkdataindex]
                 iPoint=PointArray[checkdataindex]
-                PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                 if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement*TapAllowableMovement:
                     TapState="failed"
                 if (PresentT-StartT)>TapMaximumDuration:
@@ -289,10 +289,10 @@ def SimulationGestureRecognizer(NewTaskData):
                     
                     if (PresentT-StartT)<SwipeMaximumDuration:
                         if iPoint!=0:
-                            prePointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"]
+                            prePointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"]
                             # dx=PresentX - prePointPosition[0]
                             # dy=PresentY - prePointPosition[1]
-                            # dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"] -NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"];
+                            # dt=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"] -NewTaskData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"];
                             
                             dx=PresentX -StartX
                             dy=PresentY-StartY
@@ -310,8 +310,8 @@ def SimulationGestureRecognizer(NewTaskData):
                         if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))<TapAllowableMovement*TapAllowableMovement:
                                
                             if (PresentT-StartT)<TapMaximumDuration:
-                                #if iPoint+1>=len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches']):
-                                if NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['phase']=='ended':
+                                #if iPoint+1>=len(NewTaskData['tracks'][iFinger]['touches']):
+                                if NewTaskData['tracks'][iFinger]['touches'][iPoint]['phase']=='ended':
                                     TapState="recognized"
                                     #print("Tap recognized")
                                     return 1
@@ -331,12 +331,12 @@ def SimulationGestureRecognizer(NewTaskData):
             for checkdataindex in range(len(FingerArray)):
                 iFinger=FingerArray[checkdataindex]
                 iPoint=PointArray[checkdataindex]
-                PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                 if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement*TapAllowableMovement:
                     TapState="failed"
                 if (PresentT-StartT)>TapMaximumDuration:
@@ -344,10 +344,10 @@ def SimulationGestureRecognizer(NewTaskData):
 
                 # if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>SwipeMinimumMovement * SwipeMinimumMovement:    
                 #     if (PresentT-StartT)<SwipeMaximumDuration:
-                #         prePointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"]
+                #         prePointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"]
                 #         dx=PresentX - prePointPosition[0]
                 #         dy=PresentY - prePointPosition[1]
-                #         dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"] -NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"];
+                #         dt=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"] -NewTaskData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"];
                 #         v=np.sqrt(dx * dx + dy * dy)/dt;
                         
                 #         if (abs(v) >= SwipeMinimumVelocity):
@@ -398,22 +398,22 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
     PointIndex=list()
     dX=0
     dY=0
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    for iFinger in range(len(NewTaskData["tracks"])):
 
-        for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            t=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-            dX=dX+NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]-NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][0]
-            dY=dY+NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]-NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][1]
+        for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            t=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+            dX=dX+NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]-NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][0]
+            dY=dY+NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]-NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][1]
             
             if iPoint==0:
                 FingerStartTime.append(t)
-                FingerStartPointX.append(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0])
-                FingerStartPointY.append(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1])
-                if len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])==1:
+                FingerStartPointX.append(NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0])
+                FingerStartPointY.append(NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1])
+                if len(NewTaskData["tracks"][iFinger]["touches"])==1:
                      FingerEndTime.append(t)
-            elif iPoint>=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1:
+            elif iPoint>=len(NewTaskData["tracks"][iFinger]["touches"])-1:
                 FingerEndTime.append(t)
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['phase']=='ended':
+            if NewTaskData["tracks"][iFinger]["touches"][iPoint]['phase']=='ended':
                 FingerEndTime.append(t)
             TimeData.append(t)
             FingerIndex.append(iFinger)
@@ -434,9 +434,9 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
     for tindex in range(len(SortedAllTimeStamp)):
         t=SortedAllTimeStamp[tindex]
         ThisTimeFingerCount=0
-        for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-            fingerstarttime=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
-            fingerendtime=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])-1]['timestamp']
+        for iFinger in range(len(NewTaskData["tracks"])):
+            fingerstarttime=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
+            fingerendtime=NewTaskData['tracks'][iFinger]['touches'][len(NewTaskData['tracks'][iFinger]['touches'])-1]['timestamp']
             if (t>=fingerstarttime) & (t<=fingerendtime):
                 ThisTimeFingerCount=ThisTimeFingerCount+1
 
@@ -454,12 +454,12 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
             for checkdataindex in range(len(FingerArray)):
                 iFinger=FingerArray[checkdataindex]
                 iPoint=PointArray[checkdataindex]
-                PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                 # if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement*TapAllowableMovement:
                 #     TapState="failed"
                 # if (PresentT-StartT)>TapMaximumDuration:
@@ -483,12 +483,12 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
                 for checkdataindex in range(len(FingerArray)):
                     iFinger=FingerArray[checkdataindex]
                     iPoint=PointArray[checkdataindex]
-                    PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                    PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                    PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                    StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                    StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                    StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                    PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                    PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                    PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                    StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                    StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                    StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
 
                     #if (((PresentX-StartX)*(PresentX-StartX))>PanAllowableMovement)|(((PresentY-StartY)*(PresentY-StartY))>PanAllowableMovement):
 
@@ -515,14 +515,14 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
                     iFinger=FingerArray[checkdataindex]
                     iPoint=PointArray[checkdataindex]
                     CanTap=1
-                    for iFinger in range(len(NewTaskData['rawTouchTracks'])):
-                        for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-                            PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                            PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                            PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                            StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                            StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                            StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                    for iFinger in range(len(NewTaskData['tracks'])):
+                        for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+                            PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                            PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                            PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                            StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                            StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                            StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                             if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement*TapAllowableMovement:
                                 CanTap=0
 
@@ -540,8 +540,8 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
                     #         if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))<TapAllowableMovement*TapAllowableMovement:
                                    
                     #             # if (PresentT-StartT)<TapMaximumDuration:
-                    #                 #if iPoint+1>=len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches']):
-                    #             # if NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['phase']=='ended':
+                    #                 #if iPoint+1>=len(NewTaskData['tracks'][iFinger]['touches']):
+                    #             # if NewTaskData['tracks'][iFinger]['touches'][iPoint]['phase']=='ended':
                     #             TapState="recognized"
                     #             #print("Tap recognized")
                     #             # return 1
@@ -550,19 +550,19 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
                     #             AllEvent.append(1)
                     iFinger=FingerArray[checkdataindex]
                     iPoint=PointArray[checkdataindex]
-                    PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                    PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                    PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                    StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                    StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                    StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                    PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                    PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                    PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                    StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                    StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                    StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                
                     # if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))<TapAllowableMovement*TapAllowableMovement:
                     #     if (PresentT-StartT)<TapMaximumDuration:
                     #         #if ThisTimeFingerCount==1:
                     #     # if (PresentT-StartT)<TapMaximumDuration:
-                    #         #if iPoint+1>=len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches']):
-                    #     # if NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['phase']=='ended':
+                    #         #if iPoint+1>=len(NewTaskData['tracks'][iFinger]['touches']):
+                    #     # if NewTaskData['tracks'][iFinger]['touches'][iPoint]['phase']=='ended':
                     #             TapState="recognized"
                     #             #print("Tap recognized")
                     #             # return 1
@@ -573,11 +573,11 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
                     #                     if SortedAllTimeStamp[tindex+1]-SortedAllTimeStamp[tindex]>0.1:
                     #                         AllEvent.append(1)
                                     
-                    # PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                    # PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
+                    # PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                    # PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
                     
-                    # StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][0]
-                    # StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][1]
+                    # StartX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][0]
+                    # StartY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][1]
             
                     if PanState=='changed':
                         #if (((PresentX-StartX)*(PresentX-StartX))>PanAllowableMovement)|(((PresentY-StartY)*(PresentY-StartY))>PanAllowableMovement):
@@ -611,30 +611,30 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
 
                 CanTap=1
                 
-                for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-                    PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                    PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                    PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                    StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                    StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                    StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+                    PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                    PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                    PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                    StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                    StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                    StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
                     # if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement*TapAllowableMovement:
                     #     CanTap=0
                     if (np.sqrt((PresentX-StartX)*(PresentX-StartX))>TapAllowableMovement )|(np.sqrt((PresentY-StartY)*(PresentY-StartY))>TapAllowableMovement ):
                         CanTap=0
-                # PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-                # PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-                # PresentT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
-                # StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-                # StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
-                # StartT=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['timestamp']
+                # PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+                # PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+                # PresentT=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
+                # StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+                # StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
+                # StartT=NewTaskData['tracks'][iFinger]['touches'][0]['timestamp']
 
                 # if ((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))<TapAllowableMovement*TapAllowableMovement:
                 #     # if ThisTimeFingerCount==1:
                     
                 #         # if (PresentT-StartT)<TapMaximumDuration:
-                #             #if iPoint+1>=len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches']):
-                #         # if NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['phase']=='ended':
+                #             #if iPoint+1>=len(NewTaskData['tracks'][iFinger]['touches']):
+                #         # if NewTaskData['tracks'][iFinger]['touches'][iPoint]['phase']=='ended':
                 #         TapState="recognized"
                 #         #print("Tap recognized")
                 #         # return 1
@@ -658,19 +658,19 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
     #         print("TapError")
     #         #print(NewTaskData['tapEvents'],AllEvent)
     #         AllLocation=list()
-    #         for iFinger in range(len(NewTaskData['rawTouchTracks'])):
-    #             #if len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])<20:
+    #         for iFinger in range(len(NewTaskData['tracks'])):
+    #             #if len(NewTaskData['tracks'][iFinger]['touches'])<20:
     #                 # print(NewTaskData['tapEvents'])
-    #                 # print(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])
+    #                 # print(NewTaskData['tracks'][iFinger]['touches'])
                         
                     
     #                 MaxDis=list()
-    #                 for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-    #                     PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-    #                     PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
+    #                 for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+    #                     PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+    #                     PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
                         
-    #                     StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-    #                     StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
+    #                     StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+    #                     StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
     #                     AllLocation.append([iFinger,PresentX,PresentY])
     #                     distance=np.sqrt((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))
     #                     MaxDis.append(distance)
@@ -685,19 +685,19 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
     #         print("PanError")
     #         #print(NewTaskData['tapEvents'],AllEvent)
     #         AllLocation=list()
-    #         for iFinger in range(len(NewTaskData['rawTouchTracks'])):
-    #             #if len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])<20:
+    #         for iFinger in range(len(NewTaskData['tracks'])):
+    #             #if len(NewTaskData['tracks'][iFinger]['touches'])<20:
     #                 # print(NewTaskData['tapEvents'])
-    #                 # print(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])
+    #                 # print(NewTaskData['tracks'][iFinger]['touches'])
                         
                     
     #                 MaxDis=list()
-    #                 for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-    #                     PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-    #                     PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
+    #                 for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+    #                     PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+    #                     PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
                         
-    #                     StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][0]
-    #                     StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['previousLocation'][1]
+    #                     StartX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][0]
+    #                     StartY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['previousLocation'][1]
     #                     AllLocation.append([iFinger,PresentX,PresentY])
     #                     distance=np.sqrt((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY))
     #                     MaxDis.append(distance)
@@ -711,13 +711,13 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
     #         print(len(NewTaskData['tapEvents']),len(NewTaskData['panEvents'])," vs ",AllEvent)
     # if len(NewTaskData['tapEvents'])>0:
     #     MinMax=list()
-    #     for iFinger in range(len(NewTaskData['rawTouchTracks'])):
+    #     for iFinger in range(len(NewTaskData['tracks'])):
     #         Dis=list()
-    #         for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-    #             PresentX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][0]
-    #             PresentY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['location'][1]
-    #             StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-    #             StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
+    #         for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+    #             PresentX=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][0]
+    #             PresentY=NewTaskData['tracks'][iFinger]['touches'][iPoint]['location'][1]
+    #             StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+    #             StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
     #             Dis.append(np.sqrt((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY)))
     #         #print(iFinger,np.max(Dis))
     #         MinMax.append(np.max(Dis))
@@ -732,13 +732,13 @@ def SimulationGestureRecognizer_NoSwipe(NewTaskData):
             
     #         if NewTaskData['panEvents'][ipan]['state']=='began':
     #             Dis=list()
-    #             for iFinger in range(len(NewTaskData['rawTouchTracks'])):
+    #             for iFinger in range(len(NewTaskData['tracks'])):
                     
                     
     #                 PresentX=NewTaskData['panEvents'][ipan]['location'][0]
     #                 PresentY=NewTaskData['panEvents'][ipan]['location'][1]
-    #                 StartX=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][0]
-    #                 StartY=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][0]['location'][1]
+    #                 StartX=NewTaskData['tracks'][iFinger]['touches'][0]['location'][0]
+    #                 StartY=NewTaskData['tracks'][iFinger]['touches'][0]['location'][1]
     #                 Dis.append(np.sqrt((PresentX-StartX)*(PresentX-StartX)+(PresentY-StartY)*(PresentY-StartY)))
     #                 #print(iFinger,np.max(Dis))
     #             MinMax.append(np.min(Dis))
@@ -780,8 +780,8 @@ def SimulationGestureRecognizer_Android(NewTaskData):
                 for indexFinger in range(len(FingerArray)):
                     iFinger=FingerArray[indexFinger]
                     iPoint=PointArray[indexFinger]
-                    PresentT=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-                    StartT=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
+                    PresentT=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]
+                    StartT=NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
                     if PresentT-StartT>0:
                         TimeInterval=PresentT-StartT
                 if (TimeInterval)>TapMaximumDuration:
@@ -792,8 +792,8 @@ def SimulationGestureRecognizer_Android(NewTaskData):
                 for indexFinger in range(len(FingerArray)):
                     iFinger=FingerArray[indexFinger]
                     iPoint=PointArray[indexFinger]
-                    PresentT=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-                    StartT=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]
+                    PresentT=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]
+                    StartT=NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]
                 if (PresentT-StartT)>TapMaximumDuration:
                     return 1,mAlwaysInTapRegion
         elif BeganEvent==True & EndEvent==False:
@@ -808,10 +808,10 @@ def SimulationGestureRecognizer_Android(NewTaskData):
                 iFinger=FingerArray[indexFinger]
                 iPoint=PointArray[indexFinger]
 
-                dX=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][0]
-                dY=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][1]
-                DeltaX=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["previousLocation"][0]
-                DeltaY=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["previousLocation"][1]
+                dX=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][0]-NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][0]
+                dY=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][1]-NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][1]
+                DeltaX=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][0]-NewTaskData["tracks"][iFinger]["touches"][0]["previousLocation"][0]
+                DeltaY=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][1]-NewTaskData["tracks"][iFinger]["touches"][0]["previousLocation"][1]
                 if mAlwaysInTapRegion==True:
                     distance=DeltaX*DeltaX+DeltaY*DeltaY
                     if distance>TapAllowableMovement*TapAllowableMovement:
@@ -853,16 +853,16 @@ def SimulationGestureRecognizer_Android(NewTaskData):
     TimeData=list()
     FingerIndex=list()
     PointIndex=list() 
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            t=NewTaskData['rawTouchTracks'][iFinger]['rawTouches'][iPoint]['timestamp']
+    for iFinger in range(len(NewTaskData["tracks"])):
+        for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            t=NewTaskData['tracks'][iFinger]['touches'][iPoint]['timestamp']
             TimeData.append(t)
             FingerIndex.append(iFinger)
             PointIndex.append(iPoint)      
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['phase']=='ended':
+            if NewTaskData["tracks"][iFinger]["touches"][iPoint]['phase']=='ended':
                 FingerEndTime.append(t)
                 FingerEndedFingerIndex.append(iFinger)
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['phase']=='began':
+            if NewTaskData["tracks"][iFinger]["touches"][iPoint]['phase']=='began':
                 FingerBeganTime.append(t)
                 FingerBeganFingerIndex.append(iFinger)
 
@@ -913,13 +913,13 @@ def TapTask2(NewTaskData,iTrial):
     import numpy as np
     #TapMaximumDuration=100;
     #TapAllowableMovement=15;
-    # FingerNum=len(NewTaskData["rawTouchTracks"]);
+    # FingerNum=len(NewTaskData["tracks"]);
     # if(FingerNum<1):
     #     #print("No Finger")
     #     return False
     # noTouchPoint=True
-    # for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-    #     touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    # for iFinger in range(len(NewTaskData["tracks"])):
+    #     touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
     #     if touchpointnum>0:
     #         noTouchPoint=False
 
@@ -927,41 +927,41 @@ def TapTask2(NewTaskData,iTrial):
     #     #print("No Touch Point")
     #     return False
     
-    # for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    # for iFinger in range(len(NewTaskData["tracks"])):
     #     #print(iFinger)
-    #     #print("Fingers Len",(len(TaskData["rawTouchTracks"])))
+    #     #print("Fingers Len",(len(TaskData["tracks"])))
     #     #print("TouchPoint",(touchpointnum))
-    #     #print("Point Size",(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])))
-    #     if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-    #         if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>TapMaximumDuration:
+    #     #print("Point Size",(len(TaskData["tracks"][iFinger]["touches"])))
+    #     if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+    #         if NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>TapMaximumDuration:
     #             #print("Tapping too long")
     #             return False
     #第幾個手指要再判定
 #    for iFinger in range(FingerNum):
-#        if (abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
+#        if (abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
 #               #//cout << "First touch point is not correct" << endl;
 #            print("First Touch")
 #            return False
     iFinger=0
     
-    if (abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
+    if (abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
         #//cout << "First touch point is not correct" << endl;
         
-        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0],NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] )
+        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["tracks"][iFinger]["touches"][0]["location"][0],NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] )
         #print("First Touch")
         return False
     isInAllowableMovement=True;
-    for touchPointIndex in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
+    for touchPointIndex in range(len(NewTaskData["tracks"][iFinger]["touches"])):
         
-        dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-        dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+        dx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+        dy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
         
-        dxx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["previousLocation"][0]
-        dyy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["previousLocation"][1]
+        dxx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0]-NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["previousLocation"][0]
+        dyy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1]-NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["previousLocation"][1]
         
         v=0
         if touchPointIndex >0:
-            dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex-1]["timestamp"]
+            dt=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][touchPointIndex-1]["timestamp"]
             v=np.sqrt(dxx*dxx+dyy*dyy)/dt
 
 
@@ -977,19 +977,19 @@ def TapTask2(NewTaskData,iTrial):
     EachFingerBeganTime=list()
     EachFingerEndedTime=list()
     AllFingerBeganEndTime=list()
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        if len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])==1:
-            EachFingerBeganTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
-            EachFingerEndedTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
-            AllFingerBeganEndTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
-            AllFingerBeganEndTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
+    for iFinger in range(len(NewTaskData["tracks"])):
+        if len(NewTaskData["tracks"][iFinger]["touches"])==1:
+            EachFingerBeganTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
+            EachFingerEndedTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
+            AllFingerBeganEndTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
+            AllFingerBeganEndTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
         else:
-            EachFingerBeganTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
-            EachFingerEndedTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][-1]["timestamp"])
+            EachFingerBeganTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
+            EachFingerEndedTime.append(NewTaskData["tracks"][iFinger]["touches"][-1]["timestamp"])
 
 
-            AllFingerBeganEndTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"])
-            AllFingerBeganEndTime.append(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][-1]["timestamp"])
+            AllFingerBeganEndTime.append(NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"])
+            AllFingerBeganEndTime.append(NewTaskData["tracks"][iFinger]["touches"][-1]["timestamp"])
     
 
     
@@ -1064,13 +1064,13 @@ def TapTask_SuccessVerify(NewTaskData):
     
     #TapMaximumDuration=100;
     #TapAllowableMovement=15;
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         print("False: No Finger")
         return False
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
 
@@ -1078,20 +1078,20 @@ def TapTask_SuccessVerify(NewTaskData):
         print("False:No Touch Point")
         return False
     
-    # for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    # for iFinger in range(len(NewTaskData["tracks"])):
         
     #第幾個手指要再判定
 #    for iFinger in range(FingerNum):
-#        if (abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
+#        if (abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
 #               #//cout << "First touch point is not correct" << endl;
 #            print("First Touch")
 #            return False
     iFinger=0
     
-    if (abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
+    if (abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
                 # cout << "First touch point is not correct" << endl;
         
-        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0],NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] )
+        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["tracks"][iFinger]["touches"][0]["location"][0],NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] )
         print("False: wrong Position")
         return False
     
@@ -1104,13 +1104,13 @@ def TapTaskOneTrial(NewTaskData):
     
     #TapMaximumDuration=100;
     #TapAllowableMovement=15;
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         #print("No Finger")
         return False
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
 
@@ -1118,34 +1118,34 @@ def TapTaskOneTrial(NewTaskData):
         #print("No Touch Point")
         return False
     
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    for iFinger in range(len(NewTaskData["tracks"])):
         #print(iFinger)
-        #print("Fingers Len",(len(TaskData["rawTouchTracks"])))
+        #print("Fingers Len",(len(TaskData["tracks"])))
         #print("TouchPoint",(touchpointnum))
-        #print("Point Size",(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])))
-        if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>TapMaximumDuration:
+        #print("Point Size",(len(TaskData["tracks"][iFinger]["touches"])))
+        if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+            if NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>TapMaximumDuration:
                 #print("Tapping too long")
                 return False
     #第幾個手指要再判定
 #    for iFinger in range(FingerNum):
-#        if (abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
+#        if (abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
 #               #//cout << "First touch point is not correct" << endl;
 #            print("First Touch")
 #            return False
     iFinger=0
     
-    if (abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
+    if (abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
                 #//cout << "First touch point is not correct" << endl;
         
-        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0],NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] )
+        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["tracks"][iFinger]["touches"][0]["location"][0],NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] )
         #print("First Touch")
         return False
     isInAllowableMovement=True;
-    for touchPointIndex in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
+    for touchPointIndex in range(len(NewTaskData["tracks"][iFinger]["touches"])):
         
-        dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-        dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+        dx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+        dy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
         
         
         if dx*dx+dy*dy >= TapAllowableMovement*TapAllowableMovement:
@@ -1163,13 +1163,13 @@ def TapTask(NewTaskData,iTrial):
     
     #TapMaximumDuration=100;
     #TapAllowableMovement=15;
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         #print("No Finger")
         return False
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
 
@@ -1177,34 +1177,34 @@ def TapTask(NewTaskData,iTrial):
         #print("No Touch Point")
         return False
     
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+    for iFinger in range(len(NewTaskData["tracks"])):
         #print(iFinger)
-        #print("Fingers Len",(len(TaskData["rawTouchTracks"])))
+        #print("Fingers Len",(len(TaskData["tracks"])))
         #print("TouchPoint",(touchpointnum))
-        #print("Point Size",(len(TaskData["rawTouchTracks"][iFinger]["rawTouches"])))
-        if(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])>0):
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])-1]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>TapMaximumDuration:
+        #print("Point Size",(len(TaskData["tracks"][iFinger]["touches"])))
+        if(len(NewTaskData["tracks"][iFinger]["touches"])>0):
+            if NewTaskData["tracks"][iFinger]["touches"][len(NewTaskData["tracks"][iFinger]["touches"])-1]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>TapMaximumDuration:
                 #print("Tapping too long")
                 return False
     #第幾個手指要再判定
 #    for iFinger in range(FingerNum):
-#        if (abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
+#        if (abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][0] - TaskData[iTrial]["targetFrame"][0][0] - TaskData[iTrial]["targetFrame"][1][0]*0.5) > TaskData[iTrial]["targetFrame"][1][0]*0.5)|(abs(TaskData[iTrial]["tracks"][iFinger]["touches"][0]["location"][1] - TaskData[iTrial]["targetFrame"][0][1] - TaskData[iTrial]["targetFrame"][1][1]*0.5) > TaskData[iTrial]["targetFrame"][1][1]*0.5):
 #				#//cout << "First touch point is not correct" << endl;
 #            print("First Touch")
 #            return False
     iFinger=0
     
-    if (abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
+    if (abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][0] - NewTaskData["targetFrame"][0][0] - NewTaskData["targetFrame"][1][0]*0.5) > NewTaskData["targetFrame"][1][0]*0.5)|(abs(NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] - NewTaskData["targetFrame"][0][1] - NewTaskData["targetFrame"][1][1]*0.5) > NewTaskData["targetFrame"][1][1]*0.5):
 				#//cout << "First touch point is not correct" << endl;
         
-        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0],NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1] )
+        #print((NewTaskData["targetFrame"][0][0]),(NewTaskData["targetFrame"][0][1]),(NewTaskData["targetFrame"][1][0]),(NewTaskData["targetFrame"][1][1]),NewTaskData["tracks"][iFinger]["touches"][0]["location"][0],NewTaskData["tracks"][iFinger]["touches"][0]["location"][1] )
         #print("First Touch")
         return False
     isInAllowableMovement=True;
-    for touchPointIndex in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
+    for touchPointIndex in range(len(NewTaskData["tracks"][iFinger]["touches"])):
         
-        dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-        dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][touchPointIndex]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+        dx=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+        dy=NewTaskData["tracks"][iFinger]["touches"][touchPointIndex]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
         
         
         if dx*dx+dy*dy >= TapAllowableMovement*TapAllowableMovement:
@@ -1222,13 +1222,13 @@ def SwipeTask(NewTaskData,iTrial):
     import numpy as np
     TargetDirection=NewTaskData['targetDirection']
     recognizedDirection=NewTaskData['recognizedDirection']
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         print("No Finger")
         return False
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
 
@@ -1238,15 +1238,15 @@ def SwipeTask(NewTaskData,iTrial):
     WhichFingerCanSwipe=np.zeros(FingerNum)
     
     Recognized=False
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        for iPoint in range(len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"])):
-            if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["timestamp"]>=SwipeMaximumDuration:
+    for iFinger in range(len(NewTaskData["tracks"])):
+        for iPoint in range(len(NewTaskData["tracks"][iFinger]["touches"])):
+            if NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]-NewTaskData["tracks"][iFinger]["touches"][0]["timestamp"]>=SwipeMaximumDuration:
                 if Recognized==False:
                     finalRecognizedDirection = "none";
                 continue
-            PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-            dx = PointPosition[0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-            dy = PointPosition[1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+            PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+            dx = PointPosition[0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+            dy = PointPosition[1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
             
             
             #print(dx * dx + dy * dy,"vs",SwipeMinimumMovement * SwipeMinimumMovement)
@@ -1255,12 +1255,12 @@ def SwipeTask(NewTaskData,iTrial):
                 WhichFingerCanSwipe[iFinger] = True;
 					
             if WhichFingerCanSwipe[iFinger] ==True:
-                PointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"]
-                prePointPosition=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"]
+                PointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"]
+                prePointPosition=NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"]
                 dx=PointPosition[0] - prePointPosition[0]
                 dy=PointPosition[1] - prePointPosition[1]
                 
-                dt=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"] -NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"];
+                dt=NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"] -NewTaskData["tracks"][iFinger]["touches"][iPoint-1]["timestamp"];
                 v=np.sqrt(dx * dx + dy * dy)/dt;
                 #print(v,"vs ",SwipeMinimumVelocity,abs(v) >= SwipeMinimumVelocity)
                 if (abs(v) >= SwipeMinimumVelocity):
@@ -1299,13 +1299,13 @@ def PanTask(NewTaskData,iTrial,ScreenSize,direction):
     InitialTarget=NewTaskData['initialPosition'][direction]
     
     
-    FingerNum=len(NewTaskData["rawTouchTracks"]);
+    FingerNum=len(NewTaskData["tracks"]);
     if(FingerNum<1):
         #print("No Finger")
         return 1
     noTouchPoint=True
-    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-        touchpointnum=len(NewTaskData["rawTouchTracks"][iFinger]["rawTouches"]);    
+    for iFinger in range(len(NewTaskData["tracks"])):
+        touchpointnum=len(NewTaskData["tracks"][iFinger]["touches"]);    
         if touchpointnum>0:
             noTouchPoint=False
     
@@ -1314,9 +1314,9 @@ def PanTask(NewTaskData,iTrial,ScreenSize,direction):
         return 1
     
     EachTrialUniquetimeStamp=list()
-    for iTrack in range(len(NewTaskData['rawTouchTracks'])):
-        for iPoint in range(len(NewTaskData['rawTouchTracks'][iTrack]['rawTouches'])):
-            EachTrialUniquetimeStamp.append(NewTaskData['rawTouchTracks'][iTrack]['rawTouches'][iPoint]['timestamp'])
+    for iTrack in range(len(NewTaskData['tracks'])):
+        for iPoint in range(len(NewTaskData['tracks'][iTrack]['touches'])):
+            EachTrialUniquetimeStamp.append(NewTaskData['tracks'][iTrack]['touches'][iPoint]['timestamp'])
     EachTrialUniquetimeStamp=list(set(EachTrialUniquetimeStamp))
     
     movement=0
@@ -1325,11 +1325,11 @@ def PanTask(NewTaskData,iTrial,ScreenSize,direction):
         Largest_dy_inAllFinger=0
         ThisFinger_dx=0
         ThisFinger_dy=0
-        for iFinger in range(len(NewTaskData["rawTouchTracks"])):
-            for iPoint in range(len(NewTaskData['rawTouchTracks'][iFinger]['rawTouches'])):
-                if NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]==Timestamp:
-                    ThisFinger_dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][0]
-                    ThisFinger_dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]-NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["previousLocation"][1]
+        for iFinger in range(len(NewTaskData["tracks"])):
+            for iPoint in range(len(NewTaskData['tracks'][iFinger]['touches'])):
+                if NewTaskData["tracks"][iFinger]["touches"][iPoint]["timestamp"]==Timestamp:
+                    ThisFinger_dx=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][0]-NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][0]
+                    ThisFinger_dy=NewTaskData["tracks"][iFinger]["touches"][iPoint]["location"][1]-NewTaskData["tracks"][iFinger]["touches"][iPoint]["previousLocation"][1]
                     break
             if abs(Largest_dx_inAllFinger)<abs(ThisFinger_dx):
                 Largest_dx_inAllFinger=ThisFinger_dx
@@ -1341,12 +1341,12 @@ def PanTask(NewTaskData,iTrial,ScreenSize,direction):
             movement=movement+Largest_dy_inAllFinger
                 
 #    movement=0
-#    preFingerStart=NewTaskData["rawTouchTracks"][0]["rawTouches"][0]["timestamp"]
-#    preFingerEnd=NewTaskData["rawTouchTracks"][0]["rawTouches"][0]["timestamp"]
-#    for iFinger in range(len(NewTaskData["rawTouchTracks"])):
+#    preFingerStart=NewTaskData["tracks"][0]["touches"][0]["timestamp"]
+#    preFingerEnd=NewTaskData["tracks"][0]["touches"][0]["timestamp"]
+#    for iFinger in range(len(NewTaskData["tracks"])):
 #        
-#        dx=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][-1]["location"][0] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][0];
-#        dy=NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][-1]["location"][1] - NewTaskData["rawTouchTracks"][iFinger]["rawTouches"][0]["location"][1];
+#        dx=NewTaskData["tracks"][iFinger]["touches"][-1]["location"][0] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][0];
+#        dy=NewTaskData["tracks"][iFinger]["touches"][-1]["location"][1] - NewTaskData["tracks"][iFinger]["touches"][0]["location"][1];
 #        #print("dx",dx)
 #        if direction==0:
 #            if abs(movement)<abs(dx):
