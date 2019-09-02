@@ -19,20 +19,6 @@ from os import listdir
 from os.path import isfile,isdir,join
 import json
 
-# def load_model(User,CrossValidationIndex,tGrid):
-
-#     JsonName='TrainedModel/'+str(User)+'/model_3DCNN_'+str(User)+'_'+str(CrossValidationIndex)+'_'+str(tGrid)+'.json'
-#     f = open(JsonName, 'r')
-#     model_json = f.read()
-#     f.close()
-
-#     loaded_model = model_from_json(model_json)
-#     loaded_model.load_weights('TrainedModel/'+str(User)+'/model_3DCNN_'+str(User)+'_'+str(CrossValidationIndex)+'_'+str(tGrid)+'.h5')
-
-#     print("Model Loaded. ",JsonName)
-#     return loaded_model
-
-
 
 def load_model(User,CrossValidationIndex,tGrid,Mode):
     if Mode=='Dynamic':
@@ -88,9 +74,13 @@ def CrossValidation(cvindex,data_noCrossValidation):
         
         DataLen=len(data_noCrossValidation[task]['trials'])
         Trainstart=cvindex%DataLen
-        Trainend=(cvindex+DataLen-10)%DataLen;
+        Trainend=(cvindex+DataLen-10)%DataLen
     
+        # generate index of train and validate
         if Trainstart>Trainend:
+            # ex: datalen = 30 trainStart = 15 trainEnd = 5
+            # validIndex = range(30)[5:15] -> index 5~14 
+            # trainIndex = 0~4,15~29
             ValidIndex=np.array(range(DataLen)[Trainend:Trainstart])
             TrainIndex=list(set(range(DataLen))-(set(ValidIndex)))
         else:
@@ -102,13 +92,13 @@ def CrossValidation(cvindex,data_noCrossValidation):
         ####################
         TrainData_OneTask=list()
         TrainDataDict_OneTask=dict()
-        
+        # for every index in trainIndex(every trial in task trials)
         for iTrial in TrainIndex:
             TrainTotalTrail=TrainTotalTrail+1
             FilterDataDict=data_noCrossValidation[task]['trials'][iTrial]
             TrainData_OneTask.append(FilterDataDict) 
         
-        
+        # TrainDataDict[task]['trials']
         TrainDataDict_OneTask['trials']=TrainData_OneTask
         TrainDataDict[task]=TrainDataDict_OneTask
         
@@ -133,7 +123,7 @@ def CrossValidation(cvindex,data_noCrossValidation):
     print("TotalTrials",TrainTotalTrail,ValidTotalTrail)  
     return TrainDataDict,ValidDataDict,ValidIndex,ValidTaskStartIndexArray,AllTaskValidIndex
 
-
+# Read data from json file
 def ReadData(path_0,file_0):
     for i in range(len(file_0)):
         with open(path_0+file_0[i]) as json_file: 
@@ -182,6 +172,7 @@ def ReadData(path_0,file_0):
     Device_info=data['deviceInfo']['screenSize']
     return data,Device_info
 
+# Map data to grid
 def FindIndexOfMatrix(dataX,dataY,dataT,GridSize,TimeGrid):
     import numpy as np
     IndexX=int(np.floor(dataX/GridSize))
@@ -321,11 +312,6 @@ def FindIndexOfMatrix_BasedPreviousPoint_FixedResponseTime(Point,Point_0,GridSiz
     #IndexY=int(np.floor((dy)/GridSize))+int(np.floor(((100/2))))
 
 
-    # if abs(IndexX)>210:
-    #     print("dx",dx)
-    # if abs(IndexY)>110:
-    #     print("dy",dy)
-
     if TimeGrid==0:
         print("Grid Error")
     IndexT=int(np.floor(dt/TimeGrid))
@@ -337,27 +323,6 @@ def FindIndexOfMatrix_BasedPreviousPoint_FixedResponseTime(Point,Point_0,GridSiz
     return IndexX,IndexY,IndexT 
 def FindIndexOfMatrix_BasedPreviousPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,PreviousEventTime):
     import numpy as np
-    # X=Point['location'][0]
-    # Y=Point['location'][1]
-    # T=Point['timestamp']
-
-    # #X0=Point_0['location'][0]
-    # #Y0=Point_0['location'][1]
-    # T0=Point_0['timestamp']
-
-
-    # dx=X-X0
-    # dy=Y-Y0
-    # dt=T-T0
-
-    # CenterX=int(np.floor((0-Device_info[0]/2)/GridSize))
-    # CenterY=int(np.floor((0-Device_info[1]/2)/GridSize))
-
-    #IndexX=int(np.floor((dx+(Device_info[0])/2)/GridSize))-2
-    #IndexY=int(np.floor((dy+(Device_info[1])/2)/GridSize))-2
-
-    #IndexX=int(np.floor((dx)/GridSize))+int(np.floor(((Device_info[0])/2)/GridSize))
-    #IndexY=int(np.floor((dy)/GridSize))+int(np.floor(((Device_info[1])/2)/GridSize))
 
     #######2
 
@@ -420,28 +385,7 @@ def FindIndexOfMatrix_BasedPreviousPoint_PreviousEvent(Point,Point_0,GridSize,Ti
 
 def FindIndexOfMatrix_BasedFirstPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,PreviousEventTime):
     import numpy as np
-    # X=Point['location'][0]
-    # Y=Point['location'][1]
-    # T=Point['timestamp']
-
-    # #X0=Point_0['location'][0]
-    # #Y0=Point_0['location'][1]
-    # T0=Point_0['timestamp']
-
-
-    # dx=X-X0
-    # dy=Y-Y0
-    # dt=T-T0
-
-    # CenterX=int(np.floor((0-Device_info[0]/2)/GridSize))
-    # CenterY=int(np.floor((0-Device_info[1]/2)/GridSize))
-
-    #IndexX=int(np.floor((dx+(Device_info[0])/2)/GridSize))-2
-    #IndexY=int(np.floor((dy+(Device_info[1])/2)/GridSize))-2
-
-    #IndexX=int(np.floor((dx)/GridSize))+int(np.floor(((Device_info[0])/2)/GridSize))
-    #IndexY=int(np.floor((dy)/GridSize))+int(np.floor(((Device_info[1])/2)/GridSize))
-
+ 
     #######2
 
     X=Point['location'][0]
@@ -484,10 +428,7 @@ def FindIndexOfMatrix_BasedFirstPoint_PreviousEvent(Point,Point_0,GridSize,TimeG
     #IndexY=int(np.floor((dy)/GridSize))+int(np.floor(((100/2))))
 
 
-    # if abs(IndexX)>210:
-    #     print("dx",dx)
-    # if abs(IndexY)>110:
-    #     print("dy",dy)
+
 
     if TimeGrid==0:
         print("Grid Error")
@@ -501,27 +442,6 @@ def FindIndexOfMatrix_BasedFirstPoint_PreviousEvent(Point,Point_0,GridSize,TimeG
 
 def FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed):
     import numpy as np
-    # X=Point['location'][0]
-    # Y=Point['location'][1]
-    # T=Point['timestamp']
-
-    # #X0=Point_0['location'][0]
-    # #Y0=Point_0['location'][1]
-    # T0=Point_0['timestamp']
-
-
-    # dx=X-X0
-    # dy=Y-Y0
-    # dt=T-T0
-
-    # CenterX=int(np.floor((0-Device_info[0]/2)/GridSize))
-    # CenterY=int(np.floor((0-Device_info[1]/2)/GridSize))
-
-    #IndexX=int(np.floor((dx+(Device_info[0])/2)/GridSize))-2
-    #IndexY=int(np.floor((dy+(Device_info[1])/2)/GridSize))-2
-
-    #IndexX=int(np.floor((dx)/GridSize))+int(np.floor(((Device_info[0])/2)/GridSize))
-    #IndexY=int(np.floor((dy)/GridSize))+int(np.floor(((Device_info[1])/2)/GridSize))
 
     #######2
 
@@ -597,9 +517,9 @@ def JsonToCube_NoInterpolation_FixedResponseTime(JsonData,Device_info,GridSize,T
     for task in ['tapTask','swipeTask','horizontalScrollTask','verticalScrollTask']:
         #print("------",task,"------")
         if task=='tapTask':
-            Task=0;
+            Task=0
         else:
-            Task=1;
+            Task=1
 
         for iTrial in range(len(JsonData[task]['trials'])):
             JsonData[task]['trials'][iTrial]=LabelTrialEvent(JsonData[task]['trials'][iTrial])
@@ -655,30 +575,7 @@ def JsonToCube_NoInterpolation(JsonData,Device_info,GridSize,TimeFrameNum,MaxSpe
             Task=1;
 
         #Mode1
-        # for iTrial in range(len(JsonData[task]['trials'])):
-        #     JsonData[task]['trials'][iTrial]=LabelTrialEvent(JsonData[task]['trials'][iTrial])
-        #     DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
-            
 
-        #     for iFinger in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"])):
-        #         for iPoint in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-
-        #             #Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]
-        #             Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]
-        #             Point=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-
-        #             #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix2(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-        #             Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-                    
-        #             if Time_In<TimeFrameNum:
-        #                 #Time_In=TimeFrameNum-1
-        #                 DataMatrix[Grid_InX][Grid_InY][Time_In][0]=DataMatrix[Grid_InX][Grid_InY][Time_In][0]+1
-        #                 # if Point['phase']=='ended':
-        #                 #     DataMatrix[Grid_InX][Grid_InY][Time_In][1]=DataMatrix[Grid_InX][Grid_InY][Time_In][1]+1
-
-        #     AllDataX.append(DataMatrix)
-        #     AllDataY.append(Task)
-        # #Task=Task+1
 
         #Mode2
         for iTrial in range(len(JsonData[task]['trials'])):
@@ -701,12 +598,7 @@ def JsonToCube_NoInterpolation(JsonData,Device_info,GridSize,TimeFrameNum,MaxSpe
             for eventT in SortedAllTouchEventTime:
                 RecodrdIndex=RecodrdIndex+1
                 DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
-                # BaseTime=eventT-TimeFrameNum*TimeGrid
-                # BaseTime=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
-                # if eventT-JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']>1:
-                #     BaseTime=eventT-TimeGrid*TimeFrameNum
-                # else:
-                #     BaseTime=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
+
 
                 BaseTime=eventT-TimeGrid*TimeFrameNum
                 for iFinger in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"])):
@@ -716,10 +608,7 @@ def JsonToCube_NoInterpolation(JsonData,Device_info,GridSize,TimeFrameNum,MaxSpe
                         #Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]
                         Point=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
                         if (BaseTime<=Point['timestamp']) & (eventT>=Point['timestamp']):
-                            #Point_0['timestamp']=BaseTime
-                            #Point_0['timestamp']=began_T-TimeGrid*TimeFrameNum
-                            #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix2(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-                            #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
+
                             Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,BaseTime)
                             
                             #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedFirstPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,BaseTime)
@@ -764,30 +653,6 @@ def JsonToCube_NoInterpolation_Simulator(JsonData,Device_info,GridSize,TimeFrame
             Task=1;
 
         #Mode1
-        # for iTrial in range(len(JsonData[task]['trials'])):
-        #     JsonData[task]['trials'][iTrial]=LabelTrialEvent(JsonData[task]['trials'][iTrial])
-        #     DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
-            
-
-        #     for iFinger in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"])):
-        #         for iPoint in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-
-        #             #Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][0]
-        #             Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]
-        #             Point=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
-
-        #             #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix2(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-        #             Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-                    
-        #             if Time_In<TimeFrameNum:
-        #                 #Time_In=TimeFrameNum-1
-        #                 DataMatrix[Grid_InX][Grid_InY][Time_In][0]=DataMatrix[Grid_InX][Grid_InY][Time_In][0]+1
-        #                 # if Point['phase']=='ended':
-        #                 #     DataMatrix[Grid_InX][Grid_InY][Time_In][1]=DataMatrix[Grid_InX][Grid_InY][Time_In][1]+1
-
-        #     AllDataX.append(DataMatrix)
-        #     AllDataY.append(Task)
-        # #Task=Task+1
 
         #Mode2
         for iTrial in range(len(JsonData[task]['trials'])):
@@ -817,12 +682,6 @@ def JsonToCube_NoInterpolation_Simulator(JsonData,Device_info,GridSize,TimeFrame
             for eventT in SortedAllTouchEventTime:
                 RecodrdIndex=RecodrdIndex+1
                 DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
-                # BaseTime=eventT-TimeFrameNum*TimeGrid
-                # BaseTime=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
-                # if eventT-JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']>1:
-                #     BaseTime=eventT-TimeGrid*TimeFrameNum
-                # else:
-                #     BaseTime=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
 
                 BaseTime=eventT-TimeGrid*TimeFrameNum
                 for iFinger in range(len(JsonData[task]['trials'][iTrial]["rawTouchTracks"])):
@@ -832,10 +691,7 @@ def JsonToCube_NoInterpolation_Simulator(JsonData,Device_info,GridSize,TimeFrame
                         #Point_0=JsonData[task]['trials'][iTrial]["rawTouchTracks"][0]["rawTouches"][0]
                         Point=JsonData[task]['trials'][iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]
                         if (BaseTime<=Point['timestamp']) & (eventT>=Point['timestamp']):
-                            #Point_0['timestamp']=BaseTime
-                            #Point_0['timestamp']=began_T-TimeGrid*TimeFrameNum
-                            #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix2(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-                            #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
+                   
                             Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,BaseTime)
                             
                             #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedFirstPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,BaseTime)
@@ -884,24 +740,7 @@ def array_to_color(array, cmap="Oranges"):
     s_m = plt.cm.ScalarMappable(cmap=cmap)
     return s_m.to_rgba(array)[:,:-1]
 
-# def translate(x):
-#     xx = np.ndarray((x.shape[0], 4096, 3))
-#     for i in range(x.shape[0]):
-#         xx[i] = array_to_color(x[i])
-#         if i % 1000 == 0:
-#             print(i)
-#     # Free Memory
-#     del x
 
-#     return xx
-
-
-# with h5py.File("3dmnist/full_dataset_vectors.h5", 'r') as h5:
-#     X_train, y_train = h5["X_train"][:], h5["y_train"][:]
-#     X_test, y_test = h5["X_test"][:], h5["y_test"][:]
-#     print(X_test[0])
-
-#print(FindIndexOfMatrix(550,110,2.31,22,0.1))
 
 def Visualize(Data):
     import matplotlib.pyplot as plt
@@ -955,7 +794,7 @@ def Visualize2(Data,Y):
     plt.show()
 
 
-
+#### Model
 
 # Conv2D layer
 def Conv(filters=16, kernel_size=(3,3,3), activation='relu', input_shape=None):
@@ -1075,16 +914,7 @@ def evaluate(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,RecordTrial,tGrid):
     print("==================")
     print("Tap: ", TapSuccess," ",TapTrial," Pan ",PanSuccess," ",PanTrial)
     print("===== evaluate End =====")
-    #f.write(dataString)
-    #f.close()
-    #print(pred)
-    #print(ValidIndex,accuracy_score(to_categorical(pred, num_classes=4),y_test),)
-    # Heat Map
-    #array = confusion_matrix(y_test, to_categorical(pred, num_classes=4))
-    #cm = pd.DataFrame(array, index = range(10), columns = range(10))
-    #plt.figure(figsize=(20,20))
-    #sns.heatmap(cm, annot=True)
-    #plt.show()
+
 
 
 def evaluate_TapOptimizer(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,Validation_Data_2,FactorEventCountDict_Tap,FactorEventCountDict_Pan):
@@ -1125,17 +955,6 @@ def evaluate_TapOptimizer(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,Valida
                  if iPoint==0 or iPoint==1:
                      accelerate=0
                  else:
-                     # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                     # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                     # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                     
-                     # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                     # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                     # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                     
-                     # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                     # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                     # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
 
 
                      positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
@@ -1242,60 +1061,14 @@ def evaluate_TapOptimizer(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,Valida
             FingerCenterDict[str(iFinger)]=[positionx,positiony]  
             PossibleX.append(positionx)
             PossibleY.append(positiony)
-        ####最後解決ｍｕlti fingers
-#        CandidateDataInFinger=list()
-#        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-#            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-#                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-#                    CandidateDataInFinger.append([iFinger,iPoint])
+
         
         DataPointNum=0
         for iFinger in range(len(OutputData["rawTouchTracks"])):
             for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
                  if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
                     DataPointNum=DataPointNum+1
-        
-        # if DataPointNum>1:
 
-        #     if len(CandidateDataInFinger)>1:
-        #         largestClusterFinger=np.argmax(np.bincount(np.array(CandidateDataInFinger).transpose(1,0)[0]))
-                
-        #         for i in range(len(CandidateDataInFinger)):
-        #             CheckPoint=CandidateDataInFinger[i][1]
-        #             if(CandidateDataInFinger[i][0]!=largestClusterFinger):
-        #                 if DataPointNum>1:
-        #                     LabelFalse(OutputData,CandidateDataInFinger[i][0],CheckPoint)
-        #                     DataPointNum=DataPointNum-1
-        # MaxTime=0
-        # FinalFinger=0
-        # FinalFingerPoint=0
-        # if DataPointNum>1:
-        #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-        #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-
-        #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-        #                 #print("remain",iFinger,iPoint)
-        #                 PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-        #                 PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-        #                 t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-        #                 if t>MaxTime:
-                            
-        #                     LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
-        #                     MaxTime=t
-        #                     FinalFinger=iFinger
-        #                     FinalFingerPoint=iPoint
-        #                     OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
-        #                 else:
-        #                     LabelFalse(OutputData,iFinger,iPoint)
-
-        # for iFinger in range(len(OutputData["rawTouchTracks"])):
-        #     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-        #         if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-        #             OutPutPoint=FingerCenterDict[str(iFinger)]
-        #             PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-        #             PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-        # print("Final:",FinalFinger,FinalFingerPoint)
         return OutputData,[np.mean(PossibleX),np.mean(PossibleY)]
 
 
@@ -1408,21 +1181,7 @@ def evaluate_TapOptimizer(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,Valida
                     
                     FilteredOptimizedData=FilteredJsonOneTrial(OptimizedData)
 
-                    # if (abs( OutPutPoint[0] - TaskData["targetFrame"][0][0] -TaskData["targetFrame"][1][0]*0.5) > TaskData["targetFrame"][1][0]*0.5)|(abs( OutPutPoint[1]- TaskData["targetFrame"][0][1] - TaskData["targetFrame"][1][1]*0.5) >TaskData["targetFrame"][1][1]*0.5):
-                    #         # cout << "First touch point is not correct" << endl;
-                    #     print("My Prediction False")
-                    # else:
-                    #      OptimzerSuccess=OptimzerSuccess+1
-
-                    # if len(OptimizedData['rawTouchTracks'])==0:
-                    #     print("MyFalse Nofinger")
-
-                    # if len(OptimizedData['rawTouchTracks'][0]['rawTouches'])==0:
-                    #     print("MyFalse Nopoint")
-                    # #print("MyAlgorithm OutPut:  ",OptimizedData['rawTouchTracks'][0]['rawTouches'][0])
-
-                    # if len(FilteredOptimizedData['rawTouchTracks'])==0:
-                    #     print("Nofinger")
+            
 
                     if tv.TapTask_SuccessVerify(FilteredOptimizedData):
                         OptimzerSuccess=OptimzerSuccess+1
@@ -1455,16 +1214,7 @@ def evaluate_TapOptimizer(ValidIndex,AllTaskValidIndex,DefaultSuccessRate,Valida
         dataString=str(User)+" "+str(ValidIndex)+" Accuracy: "+str(accuracy_score(to_categorical(pred, num_classes=2),y_test))+" Grid "+str(tGrid)+" Detail: "+DetailString+" ValidData: "+ValidData 
     print("Default:",DefaultSuccessRate)
     print(dataString)
-    #f.write(dataString)
-    #f.close()
-    #print(pred)
-    #print(ValidIndex,accuracy_score(to_categorical(pred, num_classes=4),y_test),)
-    # Heat Map
-    #array = confusion_matrix(y_test, to_categorical(pred, num_classes=4))
-    #cm = pd.DataFrame(array, index = range(10), columns = range(10))
-    #plt.figure(figsize=(20,20))
-    #sns.heatmap(cm, annot=True)
-    #plt.show()
+
 
 
     if RecognizedTapTrials!=0:
@@ -1857,19 +1607,6 @@ def evaluate_BasediOS(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,Dev
                          if iPoint==0 or iPoint==1:
                              accelerate=0
                          else:
-                             # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                             # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                             # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                             
-                             # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                             # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                             # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                             
-                             # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                             # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                             # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-
-
                              positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
                              positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
                              positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
@@ -1974,12 +1711,7 @@ def evaluate_BasediOS(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,Dev
                     FingerCenterDict[str(iFinger)]=[positionx,positiony]  
                     PossibleX.append(positionx)
                     PossibleY.append(positiony)
-                ####最後解決ｍｕlti fingers
-                #        CandidateDataInFinger=list()
-                #        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                #            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                #                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                    CandidateDataInFinger.append([iFinger,iPoint])
+
 
                 DataPointNum=0
                 for iFinger in range(len(OutputData["rawTouchTracks"])):
@@ -1987,47 +1719,7 @@ def evaluate_BasediOS(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,Dev
                          if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
                             DataPointNum=DataPointNum+1
 
-                # if DataPointNum>1:
 
-                #     if len(CandidateDataInFinger)>1:
-                #         largestClusterFinger=np.argmax(np.bincount(np.array(CandidateDataInFinger).transpose(1,0)[0]))
-                        
-                #         for i in range(len(CandidateDataInFinger)):
-                #             CheckPoint=CandidateDataInFinger[i][1]
-                #             if(CandidateDataInFinger[i][0]!=largestClusterFinger):
-                #                 if DataPointNum>1:
-                #                     LabelFalse(OutputData,CandidateDataInFinger[i][0],CheckPoint)
-                #                     DataPointNum=DataPointNum-1
-                # MaxTime=0
-                # FinalFinger=0
-                # FinalFingerPoint=0
-                # if DataPointNum>1:
-                #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-
-                #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                 #print("remain",iFinger,iPoint)
-                #                 PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #                 PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-                #                 t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                #                 if t>MaxTime:
-                                    
-                #                     LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
-                #                     MaxTime=t
-                #                     FinalFinger=iFinger
-                #                     FinalFingerPoint=iPoint
-                #                     OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
-                #                 else:
-                #                     LabelFalse(OutputData,iFinger,iPoint)
-
-                # for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                #         if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #             OutPutPoint=FingerCenterDict[str(iFinger)]
-                #             PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #             PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-                # print("Final:",FinalFinger,FinalFingerPoint)
                 return OutputData,[np.mean(PossibleX),np.mean(PossibleY)]
 
 
@@ -2332,21 +2024,7 @@ def evaluate_BasediOS(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,Dev
         for iTrial in range(len(Validation_Data[task]['trials'])):
             TotalCount=TotalCount+1
             CNNSuccess=JsonToCube_NoInterpolation_AllBegan_OnTrial(Validation_Data[task]['trials'][iTrial],task,Device_info,GridSize,TimeFrameNum,MaxSpeed,tGrid,ModelDict[tGrid])
-            # if task=='swipeTask' or task=='horizontalScrollTask' or task=='verticalScrollTask':
-            #     if len(Validation_Data[task]['trials'][iTrial]['tapEvents'])==0:
-            #             if len(Validation_Data[task]['trials'][iTrial]['panEvents'])>0:
-            #                     DefaultSuccessCount=DefaultSuccessCount+1
-            # elif task=='tapTask':
-                
-            #     if len(Validation_Data[task]['trials'][iTrial]['panEvents'])==0:
-            #             if len(Validation_Data[task]['trials'][iTrial]['tapEvents'])>0:
-            #                     DefaultSuccessCount=DefaultSuccessCount+1
 
-            #     if CNNSuccess==True:
-            #             TapAllAfterCNN=TapAllAfterCNN+1
-            #             defaultTap,MyTap=VerifyTap(Validation_Data_2[task]['trials'][iTrial])
-            #             TapDefaultSuccess=TapDefaultSuccess+defaultTap
-            #             TapMyTapSuccess=TapMyTapSuccess+MyTap
             if CNNSuccess==True:
 
                 SuccessCount=SuccessCount+1
@@ -2407,17 +2085,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
                          if iPoint==0 or iPoint==1:
                              accelerate=0
                          else:
-                             # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                             # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                             # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                             
-                             # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                             # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                             # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                             
-                             # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                             # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                             # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
 
 
                              positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
@@ -2524,12 +2191,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
                     FingerCenterDict[str(iFinger)]=[positionx,positiony]  
                     PossibleX.append(positionx)
                     PossibleY.append(positiony)
-                ####最後解決ｍｕlti fingers
-                #        CandidateDataInFinger=list()
-                #        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                #            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                #                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                    CandidateDataInFinger.append([iFinger,iPoint])
 
                 DataPointNum=0
                 for iFinger in range(len(OutputData["rawTouchTracks"])):
@@ -2537,47 +2198,7 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
                          if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
                             DataPointNum=DataPointNum+1
 
-                # if DataPointNum>1:
 
-                #     if len(CandidateDataInFinger)>1:
-                #         largestClusterFinger=np.argmax(np.bincount(np.array(CandidateDataInFinger).transpose(1,0)[0]))
-                        
-                #         for i in range(len(CandidateDataInFinger)):
-                #             CheckPoint=CandidateDataInFinger[i][1]
-                #             if(CandidateDataInFinger[i][0]!=largestClusterFinger):
-                #                 if DataPointNum>1:
-                #                     LabelFalse(OutputData,CandidateDataInFinger[i][0],CheckPoint)
-                #                     DataPointNum=DataPointNum-1
-                # MaxTime=0
-                # FinalFinger=0
-                # FinalFingerPoint=0
-                # if DataPointNum>1:
-                #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-
-                #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                 #print("remain",iFinger,iPoint)
-                #                 PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #                 PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-                #                 t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                #                 if t>MaxTime:
-                                    
-                #                     LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
-                #                     MaxTime=t
-                #                     FinalFinger=iFinger
-                #                     FinalFingerPoint=iPoint
-                #                     OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
-                #                 else:
-                #                     LabelFalse(OutputData,iFinger,iPoint)
-
-                # for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                #         if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #             OutPutPoint=FingerCenterDict[str(iFinger)]
-                #             PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #             PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-                # print("Final:",FinalFinger,FinalFingerPoint)
                 return OutputData,[np.mean(PossibleX),np.mean(PossibleY)]
 
 
@@ -2693,82 +2314,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
 
             return ModelDict[TimeGrid],TimeGrid,10
             #return ModelDict[0.05],0.05,10
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,5
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.09],0.07,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.09) & (TimeGrid<0.1):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,10
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01
-            # else: 
-            #     return ModelDict[0.02],0.02
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # else: 
-            #     return ModelDict[0.01],0.01
-
-            # if TimeGrid<0.04:
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # else:
-            #     return ModelDict[0.08],0.08,10
-           
-          
-
-
-
 
         def TimeInRange(PreviousEventTime,PresentEventTime,TouchPhaseTime):
             for t in TouchPhaseTime:
@@ -2928,14 +2473,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
             predictY=list()
             DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
             
-            
-
-            # if BaseTime<JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']:
-            #     BaseTime=JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
-            # if began_T-JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']>1:
-            #     BaseTime=began_T-TimeGrid*TimeFrameNum
-            # else:
-            #     BaseTime=JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
             BaseTime=began_T-TimeGrid*TimeFrameNum
             #print("EventTime ",began_T," BaseTime ",BaseTime," RecognitionTime ",began_T-BaseTime)
             for iFinger in range(len(JsonDataOneTrial["rawTouchTracks"])):
@@ -2947,11 +2484,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
 
                     
                     if (BaseTime<=Point['timestamp']) &  (began_T>=Point['timestamp']):
-                    #if (began_T-TimeGrid*TimeFrameNum<=Point['timestamp']) & (began_T>=Point['timestamp']):
-
-                        #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix2(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
-                        #Point_0['timestamp']=began_T-TimeGrid*TimeFrameNum
-
 
                         #Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed)
                         Grid_InX,Grid_InY,Time_In=FindIndexOfMatrix_BasedPreviousPoint_PreviousEvent(Point,Point_0,GridSize,TimeGrid,Device_info,MaxSpeed,BaseTime)
@@ -2981,40 +2513,6 @@ def evaluate_DynamicTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,
             prediction = np.argmax(pred, axis=1)[0]
                 #print("pred1",prediction)
             touchBeganPredict=str(prediction)
-        #     if TouchBeganEvent==True:
-        #         # if TouchEndEvent==True:
-        #         #     pred = PredictModel.predict(X_test)
-        #         #         #print("pred",pred)
-        #         #     prediction = np.argmax(pred, axis=1)[0]
-        #         #         #print("pred1",prediction)
-        #         #     touchBeganPredict=str(prediction)
-        #         # else:
-        #         #     pred = PredictModel.predict(X_test)
-        #         #     prediction=AdjustPrediction(pred)
-        #         #         #print("pred",pred)
-        #         #     #prediction = np.argmax(pred, axis=1)[0]
-        #         #         #print("pred1",prediction)
-        #         #     touchBeganPredict=str(prediction)
-
-
-        #         pred = PredictModel.predict(X_test)
-        #             #print("pred",pred)
-        #         prediction = np.argmax(pred, axis=1)[0]
-        #             #print("pred1",prediction)
-        #         touchBeganPredict=str(prediction)
-
-        #     else:
-        # #print(CNNEvent)
-        #         if touchBeganPredict=='1':
-        #             pred = PredictModel.predict(X_test)
-        #             prediction=AdjustPrediction(pred)
-        #         else:
-        #             pred = PredictModel.predict(X_test)
-        #             #print("pred",pred)
-        #             prediction = np.argmax(pred, axis=1)[0]
-        #                     #print("pred1",prediction)
-        #             touchBeganPredict=str(prediction)
-
 
 
             CNNEvent.append(prediction)
@@ -3359,18 +2857,6 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
                          if iPoint==0 or iPoint==1:
                              accelerate=0
                          else:
-                             # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                             # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                             # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                             
-                             # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                             # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                             # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                             
-                             # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                             # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                             # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-
 
                              positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
                              positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
@@ -3440,12 +2926,6 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
                             cluster_labels = kmeans_fit.labels_
                             ChooseLabel=cluster_labels
                         #print(chooseNcluster)
-                        
-                        
-                        #kmeans_fit = cluster.KMeans(n_clusters = chooseNcluster).fit(np.array(CandidateData))
-                        #cluster_labels = kmeans_fit.labels_
-                        #print(ChooseLabel)
-                        #print(CandidateData,len(CandidateData))
                         largestCluster=np.argmax(np.bincount(ChooseLabel))
                         
                         ThisClusterFinalPoint=list()
@@ -3476,60 +2956,11 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
                     FingerCenterDict[str(iFinger)]=[positionx,positiony]  
                     PossibleX.append(positionx)
                     PossibleY.append(positiony)
-                ####最後解決ｍｕlti fingers
-                #        CandidateDataInFinger=list()
-                #        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                #            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                #                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                    CandidateDataInFinger.append([iFinger,iPoint])
-
                 DataPointNum=0
                 for iFinger in range(len(OutputData["rawTouchTracks"])):
                     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
                          if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
                             DataPointNum=DataPointNum+1
-
-                # if DataPointNum>1:
-
-                #     if len(CandidateDataInFinger)>1:
-                #         largestClusterFinger=np.argmax(np.bincount(np.array(CandidateDataInFinger).transpose(1,0)[0]))
-                        
-                #         for i in range(len(CandidateDataInFinger)):
-                #             CheckPoint=CandidateDataInFinger[i][1]
-                #             if(CandidateDataInFinger[i][0]!=largestClusterFinger):
-                #                 if DataPointNum>1:
-                #                     LabelFalse(OutputData,CandidateDataInFinger[i][0],CheckPoint)
-                #                     DataPointNum=DataPointNum-1
-                # MaxTime=0
-                # FinalFinger=0
-                # FinalFingerPoint=0
-                # if DataPointNum>1:
-                #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-
-                #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                 #print("remain",iFinger,iPoint)
-                #                 PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #                 PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-                #                 t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                #                 if t>MaxTime:
-                                    
-                #                     LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
-                #                     MaxTime=t
-                #                     FinalFinger=iFinger
-                #                     FinalFingerPoint=iPoint
-                #                     OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
-                #                 else:
-                #                     LabelFalse(OutputData,iFinger,iPoint)
-
-                # for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                #         if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #             OutPutPoint=FingerCenterDict[str(iFinger)]
-                #             PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #             PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-                # print("Final:",FinalFinger,FinalFingerPoint)
                 return OutputData,[np.mean(PossibleX),np.mean(PossibleY)]
 
 
@@ -3645,82 +3076,6 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
 
             return ModelDict[TimeGrid],TimeGrid,10
             #return ModelDict[0.05],0.05,10
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,5
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.09],0.07,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.09) & (TimeGrid<0.1):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,10
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01
-            # else: 
-            #     return ModelDict[0.02],0.02
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # else: 
-            #     return ModelDict[0.01],0.01
-
-            # if TimeGrid<0.04:
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # else:
-            #     return ModelDict[0.08],0.08,10
-           
-          
-
-
-
 
         def TimeInRange(PreviousEventTime,PresentEventTime,TouchPhaseTime):
             for t in TouchPhaseTime:
@@ -3898,14 +3253,6 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
             predictY=list()
             DataMatrix=np.zeros((GridNum_InX,GridNum_InY,TimeFrameNum,Channel))
             
-            
-
-            # if BaseTime<JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']:
-            #     BaseTime=JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
-            # if began_T-JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']>1:
-            #     BaseTime=began_T-TimeGrid*TimeFrameNum
-            # else:
-            #     BaseTime=JsonDataOneTrial["rawTouchTracks"][0]["rawTouches"][0]['timestamp']
             BaseTime=began_T-TimeGrid*TimeFrameNum
             #print("EventTime ",began_T," BaseTime ",BaseTime," RecognitionTime ",began_T-BaseTime)
             for iFinger in range(len(JsonDataOneTrial["rawTouchTracks"])):
@@ -3951,42 +3298,6 @@ def evaluate_DynamicTime_BasedSimulator(ValidIndex,AllTaskValidIndex,ModelDict,V
             prediction = np.argmax(pred, axis=1)[0]
                 #print("pred1",prediction)
             touchBeganPredict=str(prediction)
-        #     if TouchBeganEvent==True:
-        #         # if TouchEndEvent==True:
-        #         #     pred = PredictModel.predict(X_test)
-        #         #         #print("pred",pred)
-        #         #     prediction = np.argmax(pred, axis=1)[0]
-        #         #         #print("pred1",prediction)
-        #         #     touchBeganPredict=str(prediction)
-        #         # else:
-        #         #     pred = PredictModel.predict(X_test)
-        #         #     prediction=AdjustPrediction(pred)
-        #         #         #print("pred",pred)
-        #         #     #prediction = np.argmax(pred, axis=1)[0]
-        #         #         #print("pred1",prediction)
-        #         #     touchBeganPredict=str(prediction)
-
-
-        #         pred = PredictModel.predict(X_test)
-        #             #print("pred",pred)
-        #         prediction = np.argmax(pred, axis=1)[0]
-        #             #print("pred1",prediction)
-        #         touchBeganPredict=str(prediction)
-
-        #     else:
-        # #print(CNNEvent)
-        #         if touchBeganPredict=='1':
-        #             pred = PredictModel.predict(X_test)
-        #             prediction=AdjustPrediction(pred)
-        #         else:
-        #             pred = PredictModel.predict(X_test)
-        #             #print("pred",pred)
-        #             prediction = np.argmax(pred, axis=1)[0]
-        #                     #print("pred1",prediction)
-        #             touchBeganPredict=str(prediction)
-
-
-
             CNNEvent.append(prediction)
 
 
@@ -4418,19 +3729,6 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
                          if iPoint==0 or iPoint==1:
                              accelerate=0
                          else:
-                             # positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]/Device_info[0]
-                             # positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]/Device_info[1]
-                             # positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
-                             
-                             # positionX2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][0]/Device_info[0]
-                             # positionY2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["location"][1]/Device_info[1]
-                             # positionT2=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-1]["timestamp"]
-                             
-                             # positionX3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][0]/Device_info[0]
-                             # positionY3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["location"][1]/Device_info[1]
-                             # positionT3=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]["timestamp"]
-
-
                              positionX1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][0]
                              positionY1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["location"][1]
                              positionT1=OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint-2]["timestamp"]
@@ -4498,13 +3796,7 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
                             kmeans_fit = cluster.KMeans(n_clusters = 2).fit(np.array(CandidateData))
                             cluster_labels = kmeans_fit.labels_
                             ChooseLabel=cluster_labels
-                        #print(chooseNcluster)
-                        
-                        
-                        #kmeans_fit = cluster.KMeans(n_clusters = chooseNcluster).fit(np.array(CandidateData))
-                        #cluster_labels = kmeans_fit.labels_
-                        #print(ChooseLabel)
-                        #print(CandidateData,len(CandidateData))
+
                         largestCluster=np.argmax(np.bincount(ChooseLabel))
                         
                         ThisClusterFinalPoint=list()
@@ -4535,12 +3827,6 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
                     FingerCenterDict[str(iFinger)]=[positionx,positiony]  
                     PossibleX.append(positionx)
                     PossibleY.append(positiony)
-                ####最後解決ｍｕlti fingers
-                #        CandidateDataInFinger=list()
-                #        for iFinger in range(len(myTask[iTrial]["rawTouchTracks"])):
-                #            for iPoint in range(len(myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"])):
-                #                if myTask[iTrial]["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                    CandidateDataInFinger.append([iFinger,iPoint])
 
                 DataPointNum=0
                 for iFinger in range(len(OutputData["rawTouchTracks"])):
@@ -4548,47 +3834,6 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
                          if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
                             DataPointNum=DataPointNum+1
 
-                # if DataPointNum>1:
-
-                #     if len(CandidateDataInFinger)>1:
-                #         largestClusterFinger=np.argmax(np.bincount(np.array(CandidateDataInFinger).transpose(1,0)[0]))
-                        
-                #         for i in range(len(CandidateDataInFinger)):
-                #             CheckPoint=CandidateDataInFinger[i][1]
-                #             if(CandidateDataInFinger[i][0]!=largestClusterFinger):
-                #                 if DataPointNum>1:
-                #                     LabelFalse(OutputData,CandidateDataInFinger[i][0],CheckPoint)
-                #                     DataPointNum=DataPointNum-1
-                # MaxTime=0
-                # FinalFinger=0
-                # FinalFingerPoint=0
-                # if DataPointNum>1:
-                #     for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #         for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-
-                #              if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #                 #print("remain",iFinger,iPoint)
-                #                 PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #                 PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-                #                 t=OutputData["rawTouchTracks"][iFinger]["rawTouches"][len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])-1]['timestamp']- OutputData["rawTouchTracks"][iFinger]["rawTouches"][0]['timestamp']
-                #                 if t>MaxTime:
-                                    
-                #                     LabelFalse(OutputData,FinalFinger,FinalFingerPoint)
-                #                     MaxTime=t
-                #                     FinalFinger=iFinger
-                #                     FinalFingerPoint=iPoint
-                #                     OutputData["rawTouchTracks"][FinalFinger]["rawTouches"][FinalFingerPoint]['label']=True
-                #                 else:
-                #                     LabelFalse(OutputData,iFinger,iPoint)
-
-                # for iFinger in range(len(OutputData["rawTouchTracks"])):
-                #     for iPoint in range(len(OutputData["rawTouchTracks"][iFinger]["rawTouches"])):
-                #         if OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['label']==True:
-                #             OutPutPoint=FingerCenterDict[str(iFinger)]
-                #             PossibleX.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][0])
-                #             PossibleY.append(OutputData["rawTouchTracks"][iFinger]["rawTouches"][iPoint]['location'][1])
-
-                # print("Final:",FinalFinger,FinalFingerPoint)
                 return OutputData,[np.mean(PossibleX),np.mean(PossibleY)]
 
 
@@ -4715,82 +3960,6 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
             return ModelDict[TimeGrid],TimeGrid,10
             #return ModelDict[0.05],0.05,10
 
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,5
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.005],0.005,10
-            # elif (TimeGrid>=0.01) & (TimeGrid<0.02):
-            #     return ModelDict[0.01],0.01,10
-            # elif (TimeGrid>=0.02) & (TimeGrid<0.03):
-            #     return ModelDict[0.02],0.02,10
-            # elif (TimeGrid>=0.03) & (TimeGrid<0.04):
-            #     return ModelDict[0.03],0.03,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.07) & (TimeGrid<0.08):
-            #     return ModelDict[0.09],0.07,10
-            # elif (TimeGrid>=0.08) & (TimeGrid<0.09):
-            #     return ModelDict[0.08],0.08,10
-            # elif (TimeGrid>=0.09) & (TimeGrid<0.1):
-            #     return ModelDict[0.09],0.09,10
-            # else: 
-            #     return ModelDict[0.1],0.1,10
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # elif (TimeGrid>=0.005 )&(TimeGrid<0.01):
-            #     return ModelDict[0.01],0.01
-            # else: 
-            #     return ModelDict[0.02],0.02
-
-            # if TimeGrid<0.005:
-            #     return ModelDict[0.005],0.005
-            # else: 
-            #     return ModelDict[0.01],0.01
-
-            # if TimeGrid<0.04:
-            #     return ModelDict[0.04],0.04,10
-            # elif (TimeGrid>=0.04) & (TimeGrid<0.05):
-            #     return ModelDict[0.05],0.05,10
-            # elif (TimeGrid>=0.05) & (TimeGrid<0.06):
-            #     return ModelDict[0.06],0.06,10
-            # elif (TimeGrid>=0.06) & (TimeGrid<0.07):
-            #     return ModelDict[0.07],0.07,10
-            # else:
-            #     return ModelDict[0.08],0.08,10
-           
-          
-
-
-
-
         def TimeInRange(PreviousEventTime,PresentEventTime,TouchPhaseTime):
             for t in TouchPhaseTime:
                 if (t>=PreviousEventTime) & (t<=PresentEventTime):
@@ -4872,40 +4041,6 @@ def evaluate_FixedTime(ValidIndex,AllTaskValidIndex,ModelDict,Validation_Data,De
         prediction = np.argmax(pred, axis=1)[0]
             #print("pred1",prediction)
         touchBeganPredict=str(prediction)
-    #     if TouchBeganEvent==True:
-    #         # if TouchEndEvent==True:
-    #         #     pred = PredictModel.predict(X_test)
-    #         #         #print("pred",pred)
-    #         #     prediction = np.argmax(pred, axis=1)[0]
-    #         #         #print("pred1",prediction)
-    #         #     touchBeganPredict=str(prediction)
-    #         # else:
-    #         #     pred = PredictModel.predict(X_test)
-    #         #     prediction=AdjustPrediction(pred)
-    #         #         #print("pred",pred)
-    #         #     #prediction = np.argmax(pred, axis=1)[0]
-    #         #         #print("pred1",prediction)
-    #         #     touchBeganPredict=str(prediction)
-
-
-    #         pred = PredictModel.predict(X_test)
-    #             #print("pred",pred)
-    #         prediction = np.argmax(pred, axis=1)[0]
-    #             #print("pred1",prediction)
-    #         touchBeganPredict=str(prediction)
-
-    #     else:
-    # #print(CNNEvent)
-    #         if touchBeganPredict=='1':
-    #             pred = PredictModel.predict(X_test)
-    #             prediction=AdjustPrediction(pred)
-    #         else:
-    #             pred = PredictModel.predict(X_test)
-    #             #print("pred",pred)
-    #             prediction = np.argmax(pred, axis=1)[0]
-    #                     #print("pred1",prediction)
-    #             touchBeganPredict=str(prediction)
-
 
        
 
@@ -5079,29 +4214,14 @@ if __name__ == '__main__':
     startCV=int(sys.argv[4])
     endCV=int(sys.argv[5])
 
-
-    FactorEventCountDict_Tap=dict()
-    FactorEventCountDict_Pan=dict()
-    for DictLabel in ['TrialNum','NoEvent','PanOthers','TapPanOthers','TapOthers','Others','Pan','TapPan','Tap']:
-
-        FactorEventCountDict_Tap[DictLabel]=0
-        FactorEventCountDict_Pan[DictLabel]=0
-        FactorEventCountDict_Tap=dict()
-        FactorEventCountDict_Pan=dict()
-        for DictLabel in ['TrialNum','NoEvent','PanOthers','TapPanOthers','TapOthers','Others','Pan','TapPan','Tap']:
-
-            FactorEventCountDict_Tap[DictLabel]=0
-            FactorEventCountDict_Pan[DictLabel]=0
-   
-
-        AllCrossValidationSuccess=list()
-        Default_AllCrossValidationSuccess=list()
-                
-        TapDefaultSuccessList=list()
-        TapMyalgoSuccessList=list()
-        TapFirstSuccessList=list()
-        TapEndSuccessList=list()
-
+        
+    AllCrossValidationSuccess=list()
+    Default_AllCrossValidationSuccess=list()
+            
+    TapDefaultSuccessList=list()
+    TapMyalgoSuccessList=list()
+    TapFirstSuccessList=list()
+    TapEndSuccessList=list()
 
     from datetime import datetime
     TimeNow=datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
@@ -5120,14 +4240,17 @@ if __name__ == '__main__':
     tensorboard = TensorBoard(batch_size=batch_size)
 
 
-
+    # ANNY-NOTE: input path
     path='StudyData/NewData/'+User+'/'
 
+    # ANNY-NOTE: output path
     WritingFileName='Result/Classify/'+User+"_"+str(sys.argv[6])+"_3DCNN_"+TimeNow+'.txt'
     
     #f=open(WritingFileName,'a')
 
     print("Open File:",WritingFileName)
+    ## ANNY-NOTE: Maybe not used
+
     from datetime import datetime
     TimeNow=datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
     #WritingFileName='Result/Classify/'+User+"_ThresholdBased_"+TimeNow+'.txt'
@@ -5144,7 +4267,6 @@ if __name__ == '__main__':
     #for cvIndex in range(1):
 
     #rc=tGrid*10
-    print("hehehehehejdiajiawjfdajfpiajpfajpfajapd")
     if ResponseMode=='Fixed':
         rc=float(sys.argv[6])*10   #比快
     else:
@@ -5172,11 +4294,12 @@ if __name__ == '__main__':
     VPanSingleList=list()
     VPanMultiList=list()
 
+    # crossValidation
     for cvIndex in range(startCV,endCV):
      
         
         cvIndex=cvIndex*9%100
-        
+        # validation or training
         if TrainingMode!='2':
             Training_Data,Validation_Data,ValidIndex,ValidTaskStartIndexArray,AllTaskValidIndex=CrossValidation(cvIndex,data_NoCrossValidation_RecognitionTime)
             Training_Data_2,Validation_Data_2,ValidIndex_2,ValidTaskStartIndexArray_2,AllTaskValidIndex_2=CrossValidation(cvIndex,data_NoCrossValidation_RecognitionTime_NoInterpolation)
@@ -5192,7 +4315,7 @@ if __name__ == '__main__':
         if ResponseMode=='Dynamic':
             if TrainingMode=='1':
                 MaxSpeed=10
-                
+                # windowsize
                 DynamicTime=float(sys.argv[6])
                 DisGrid=float(sys.argv[7])
                 MaxSpeed=float(sys.argv[8])

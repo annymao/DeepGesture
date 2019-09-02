@@ -88,6 +88,7 @@ def LabelFalse(InputTaskData,iTrial,iFinger,iPoint):
 
 
 def ReadData(path_0,file_0):
+    data = dict{}
     for i in range(len(file_0)):
         with open(path_0+file_0[i]) as json_file: 
             
