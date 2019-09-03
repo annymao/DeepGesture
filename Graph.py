@@ -1526,11 +1526,11 @@ def DurationDiscreteGesture_v1():
     AllUser=['3001','3002','3003','3005','3006','3007','3008','3009','3010','3011','3012','3014']
 
     #AllUser=['3007','3008','3009','3010','3011','3012','3014']
-
-    for iUser in range(12):
+    #ANNY-NOTE: change number of user
+    for iUser in range(1):
         User=AllUser[iUser]
-        path='StudyData/NewData/'+User+'/'
-
+        #path='StudyData/NewData/'+User+'/'
+        path = "Data/"
         files=listdir(path)
         file=list()
         for i in range(len(files)):
@@ -1545,11 +1545,14 @@ def DurationDiscreteGesture_v1():
         HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
         VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
-        plt.subplots_adjust(wspace=0.5,hspace=0.5)
-        plt.subplot(4,3,iUser+1)
-        #PlotJerk_AllVelocity(GraphData[0],User)
+        # plt.subplots_adjust(wspace=0.5,hspace=0.5)
+        # plt.subplot(4,3,iUser+1)
+        fig = plt.figure(figsize=(10, 8))
+        
+        fig3,ax3=plt.subplots(1)
+        PlotJerk_AllVelocity(GraphData[0],User)
         #PlotJerk_Accelerate(GraphData[0],User)
-        Plot_FingerTime(GraphData[0],User,iUser+1)
+        #Plot_FingerTime(GraphData[0],User,iUser+1)
 
     plt.savefig('DurationDiscreteGesture.png')
     plt.show()
@@ -1676,10 +1679,10 @@ def DurationDiscreteGesture_v2():
     AllUserPan=list()
     AllUserTap=list()
     import matplotlib.pyplot as plt
-    for iUser in range(13):
+    for iUser in range(1):
         User=AllUser[iUser]
-        path='StudyData/NewData/'+User+'/'
-
+        #path='StudyData/NewData/'+User+'/'
+        path = 'Data/'
         files=listdir(path)
         file=list()
         for i in range(len(files)):
@@ -1747,8 +1750,8 @@ def DurationDiscreteGesture_v2():
     plt.xlabel=AllUserLabel
     plt.ylabel='sec'
     plt.xticks([1,2,3,4,5,6,7,8,9,10,11,12,13],AllUserLabel)
-    plt.yticks(np.arange(0,1.3,0.1))
-    plt.ylim([0,1.3])
+    plt.yticks(np.arange(0,0.5,0.1))
+    plt.ylim([0,0.5])
 
 
 
@@ -1771,8 +1774,8 @@ def DurationDiscreteGesture_v2():
     plt.title("Duration in swipe(fast pan) task (sec)")
     plt.ylabel='sec'
 
-    plt.yticks(np.arange(0,2.3,0.1))
-    plt.ylim([0,2.3])
+    plt.yticks(np.arange(0,0.5,0.1))
+    plt.ylim([0,0.5])
         # plt.xticks([y+1 for y in range(len(all_data))], ['x1', 'x2', 'x3'])
         # plt.xlabel('measurement x')
         # t = plt.title('Box plot')
@@ -1827,6 +1830,25 @@ def SurveyThreshold():
 
 
 ## ANNY-NOTE: 需要 event
+def GetAllEvents(trial):
+    tapEvents = list()
+    panEvents = list()
+    longPressEvents = list()
+    otherEvents = list()
+    swipeEvents = list()
+    for event in trial['events']:
+        if event['type'] == 'tap':
+            tapEvents.append(event)
+        elif event['type'] == 'longPress':
+            longPressEvents.append(event)
+        elif event['type'] == 'pan':
+            panEvents.append(event)
+        elif event['type'] == 'swipe':
+            swipeEvents.append(event)
+        else:
+            otherEvents.append(event)
+    return tapEvents,longPressEvents,panEvents,swipeEvents,otherEvents
+
 def Draw_RecognizerSponseTime():
     #ANNY-NOTE: file path
 
@@ -1855,10 +1877,11 @@ def Draw_RecognizerSponseTime():
 
         TapTaskResponseTime=list()
         for iTrial in range(len(Tap_GraphData)):
+            tapEvents, longPressEvents, panEvents,swipeEvents, _ = GetAllEvents(Tap_GraphData[iTrial])
             #for tapEvent in range(len(Tap_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
-                if len(Tap_GraphData[iTrial]['tapEvents'])>0:
-                    TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
+                if len(tapEvents)>0:
+                    TapTaskResponseTime.append(tapEvents[tapEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             
 
             #TapTaskResponseTime.append(Tap_GraphData[iTrial]['tapEvents'][0]['timestamp']-Tap_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
@@ -1868,26 +1891,27 @@ def Draw_RecognizerSponseTime():
 
             #for panEvent in range(len(Tap_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
-                if len(Tap_GraphData[iTrial]['panEvents'])>0:
+                if len(panEvents)>0:
                     Min=list()
                     for iFinger in range(len(Tap_GraphData[iTrial]["tracks"])):
-                        t=Tap_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                        t=panEvents[panEvent]['timestamp']-Tap_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     TapTaskResponseTime.append(np.min(Min))
                 
         SwipeTaskResponseTime=list()
         for iTrial in range(len(Swipe_GraphData)):
+            tapEvents, longPressEvents, panEvents,swipeEvents,_ = GetAllEvents(Swipe_GraphData[iTrial])
             #for tapEvent in range(len(Swipe_GraphData[iTrial]['tapEvents'])):
             for tapEvent in range(1):
-                if len(Swipe_GraphData[iTrial]['tapEvents'])>0:
-                    SwipeTaskResponseTime.append(Swipe_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
+                if len(tapEvents)>0:
+                    SwipeTaskResponseTime.append(tapEvents[tapEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(Swipe_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
                 if len(Swipe_GraphData[iTrial]['panEvents'])>0:
                     Min=list()
                     for iFinger in range(len(Swipe_GraphData[iTrial]["tracks"])):
-                        t=Swipe_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                        t=panEvents[panEvent]['timestamp']-Swipe_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     SwipeTaskResponseTime.append(np.min(Min))
@@ -1895,15 +1919,16 @@ def Draw_RecognizerSponseTime():
         HPanTaskResponseTime=list()
         for iTrial in range(len(HScroll_GraphData)):
             #for tapEvent in range(len(HScroll_GraphData[iTrial]['tapEvents'])):
+            tapEvents, longPressEvents, panEvents,swipeEvents,_ = GetAllEvents(HScroll_GraphData[iTrial])
             for tapEvent in range(1):
-                if len(HScroll_GraphData[iTrial]['tapEvents'])>0:
-                    HPanTaskResponseTime.append(HScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
+                if len(tapEvents)>0:
+                    HPanTaskResponseTime.append(tapEvents[tapEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(HScroll_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
-                if len(HScroll_GraphData[iTrial]['panEvents'])>0:
+                if len(panEvents)>0:
                     Min=list()
                     for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
-                        t=HScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                        t=panEvents[panEvent]['timestamp']-HScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     HPanTaskResponseTime.append(np.min(Min))
@@ -1911,15 +1936,17 @@ def Draw_RecognizerSponseTime():
         VPanTaskResponseTime=list()
         for iTrial in range(len(VScroll_GraphData)):
             #for tapEvent in range(len(VScroll_GraphData[iTrial]['tapEvents'])):
+            tapEvents, longPressEvents, panEvents,swipeEvents,_ = GetAllEvents(HScroll_GraphData[iTrial])
+
             for tapEvent in range(1):
-                if len(VScroll_GraphData[iTrial]['tapEvents'])>0:
-                    VPanTaskResponseTime.append(VScroll_GraphData[iTrial]['tapEvents'][tapEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
+                if len(tapEvents)>0:
+                    VPanTaskResponseTime.append(tapEvents[tapEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][0]["touches"][0]['timestamp'])
             #for panEvent in range(len(VScroll_GraphData[iTrial]['panEvents'])):
             for panEvent in range(1):
-                if len(VScroll_GraphData[iTrial]['panEvents'])>0:
+                if len(panEvents)>0:
                     Min=list()
                     for iFinger in range(len(HScroll_GraphData[iTrial]["tracks"])):
-                        t=VScroll_GraphData[iTrial]['panEvents'][panEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
+                        t=panEvents[panEvent]['timestamp']-VScroll_GraphData[iTrial]["tracks"][iFinger]["touches"][0]['timestamp']
                         if t>0:
                             Min.append(t)
                     VPanTaskResponseTime.append(np.min(Min))
@@ -2998,62 +3025,64 @@ def AnalyzeErrorOneTask(task):
 
         for iTrial in range(len(GraphData)):
             AssignedClass=0
-            OtherEvent=OtherEventFuc(GraphData,iTrial)
-            if len(GraphData[iTrial]['tapEvents'])>0:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            tapEvents, longPressEvents,panEvents,swipeEvents,otherEvents = GetAllEvents(GraphData[iTrial])
+            OtherEvent= len(otherEvents)#OtherEventFuc(GraphData,iTrial)
+            if len(tapEvents)>0:
+                if len(panEvents)==0:
                     if OtherEvent==0:
                         OnlyTap_Count=OnlyTap_Count+1
                         AssignedClass=1
             
-            if len(GraphData[iTrial]['tapEvents'])>0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)>0:
+                if len(panEvents)>0:
                     if OtherEvent==0:
                         TapScroll_Count=TapScroll_Count+1
+                        print(iTrial)
                         AssignedClass=1
 
 
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)==0:
+                if len(panEvents)>0:
                     if OtherEvent==0:
                         NumberOfPanBegan=0
-                        for i in range(len(GraphData[iTrial]['panEvents'])):
-                            if GraphData[iTrial]['panEvents'][i]['state']=='began':
+                        for i in range(len(panEvents)):
+                            if panEvents[i]['state']=='began':
                                 NumberOfPanBegan=NumberOfPanBegan+1
                         OnlyScroll_Count=OnlyScroll_Count+1
                         AssignedClass=1
                        
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])==0: 
+            if len(tapEvents)==0:
+                if len(panEvents)==0: 
                     if OtherEvent>0:
                         OnlyOtherEvent=OnlyOtherEvent+1
                         AssignedClass=1
 
-            if len(GraphData[iTrial]['tapEvents'])==1:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==1:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
                         AssignedClass=1
-            if len(GraphData[iTrial]['tapEvents'])==2:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==2:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
                         AssignedClass=1
-            if len(GraphData[iTrial]['tapEvents'])>=3:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)>=3:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
                         AssignedClass=1
-            if len(GraphData[iTrial]['tapEvents'])>0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)>0:
+                if len(panEvents)>0:
                     if OtherEvent>0:
                         OtherEventCount_Tap_Scroll=OtherEventCount_Tap_Scroll+1
                         AssignedClass=1
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)==0:
+                if len(panEvents)>0:
                     if OtherEvent>0:
                         NumberOfPanBegan=0
-                        for i in range(len(GraphData[iTrial]['panEvents'])):
-                            if GraphData[iTrial]['panEvents'][i]['state']=='began':
+                        for i in range(len(panEvents)):
+                            if panEvents[i]['state']=='began':
                                 NumberOfPanBegan=NumberOfPanBegan+1
                         if NumberOfPanBegan==1:
 
@@ -3062,14 +3091,14 @@ def AnalyzeErrorOneTask(task):
                         elif NumberOfPanBegan>1:
                             OtherEventCount_Scroll=OtherEventCount_Scroll+1
                             AssignedClass=1
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==0:
+                if len(panEvents)==0:
                     if OtherEvent==0:
                         NoEvent_Count=NoEvent_Count+1
                         AssignedClass=1
 
             if AssignedClass==0:
-                print("Trial ",iTrial,"Events: ",len(GraphData[iTrial]['tapEvents']),len(GraphData[iTrial]['panEvents']),len(GraphData[iTrial]['longPressEvents']),len(GraphData[iTrial]['rotationEvents']),len(GraphData[iTrial]['pinchEvents']),len(GraphData[iTrial]['swipeEvents']))
+                print("Trial ",iTrial,"Events: ",len(tapEvents),len(panEvents),len(longPressEvents),len(otherEvents),len(swipeEvents,))
         
         return [OnlyTap_Count,OtherEventCount_Tap,OnlyScroll_Count,OtherEventCount_Scroll,TapScroll_Count,OtherEventCount_Tap_Scroll,OnlyOtherEvent,NoEvent_Count],labels
             
@@ -3197,11 +3226,11 @@ def AnalyzeErrorOneTask(task):
     labels=['Only Tap ,No Other Event','OtherEvents With Tap','Only Scroll ,No Other Event','OtherEvents With Scroll','Tap Scroll ,No Other Event','OtherEvents With Scroll and Tap','Only OtherEvents','NoEvent']
         
     
-
-    for iUser in range(13):
+    #ANNY-Note: change numer
+    for iUser in range(1):
         User=AllUser[iUser ]
-        path='StudyData/NewData/'+User+'/'
-
+        #path='StudyData/NewData/'+User+'/'
+        path = 'Data/'
         files=listdir(path)
         file=list()
         for i in range(len(files)):
@@ -3211,11 +3240,12 @@ def AnalyzeErrorOneTask(task):
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
+        ## ANNY-NOTE: 其實不用那麼長
         Tap_GraphData=GraphData[0]['tap']['trials']
         Swipe_GraphData=GraphData[0]['swipe']['trials']
         HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
         VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
-
+        LongPress_GraphData = GraphData[0]['longPress']['trials']
         if task=='tap':
             TapError,labels=Analyzing2(Tap_GraphData)
         elif task=='swipe':
@@ -3224,7 +3254,8 @@ def AnalyzeErrorOneTask(task):
             TapError,labels=Analyzing2(HScroll_GraphData)
         elif task=='verticalScroll':
             TapError,labels=Analyzing2(VScroll_GraphData)
-
+        elif task =='longPress':
+            TapError,labels=Analyzing2(LongPress_GraphData)
         explode_Tap=np.zeros(len(TapError))
         explode_Pan=np.zeros(len(TapError))
 
@@ -3235,12 +3266,9 @@ def AnalyzeErrorOneTask(task):
            
         plt.pie(TapError,colors=colors,explode=explode_Tap,autopct=lambda pct: plot_func(pct, TapError),pctdistance= 1.1)
         plt.title("P"+str(iUser+1)+" "+task)
-        if iUser==12:  
-            plt.legend(labels=labels,bbox_to_anchor=[0,1,3.5,0],prop={'size':12})
+        #if iUser==12:  
+        plt.legend(labels=labels,bbox_to_anchor=[0,1,3.5,0],prop={'size':12})
             
-
-    
-        
 
     plt.show()
 
@@ -4028,14 +4056,6 @@ def TapOptimizer_Analysis(User,Trial,stage):
         firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
         #TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
         #TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
-        
-      
-
-
-
-                
-
-               
         #############################
         # plt.subplot(4,1,1)
         fig1,ax1=plt.subplots(1)
@@ -4080,15 +4100,9 @@ def TapOptimizer_Analysis(User,Trial,stage):
         X1=TaskData["targetFrame"][0][0]
         Y1=TaskData["targetFrame"][0][1]   
 
-
-
         fig = plt.figure(figsize=(10, 8))
         outer = gridspec.GridSpec(3, 2, wspace=0.1, hspace=0.1)
-        
-                
 
-               
-  
         fig3,ax3=plt.subplots(1)
    
 
@@ -4180,7 +4194,147 @@ def TapOptimizer_Analysis(User,Trial,stage):
     else:
         print("Exceeded Index of Trial")
   
+def LongPress_Analysis(User,Trial,stage):
+    import numpy as np
+    import matplotlib.patches as patches
+    import matplotlib.gridspec as gridspec
+    def LabelAllTrue(TaskData):
+        for iFinger in range(len(TaskData["tracks"])):
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])): 
+                    TaskData["tracks"][iFinger]["touches"][iPoint]['label']=True
 
+        return TaskData
+    def DrawScroll(TaskData):
+        AllFinger_PositionX=list()
+        AllFinger_PositionY=list()
+        AllFinger_PositionX_Dropout=list()
+        AllFinger_PositionY_Dropout=list()
+
+        AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
+
+        firstPointX=TaskData["tracks"][0]["touches"][0]['location'][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
+        fig1,ax1=plt.subplots(1)
+        AllFinger_PositionX=list()
+        AllFinger_PositionY=list()
+        for iFinger in range(len(TaskData["tracks"])):
+            AllFinger_PositionX.append([])
+            AllFinger_PositionY.append([])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                # if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
+
+
+        for iFinger in range(len(AllFinger_PositionX)):
+            ax1.scatter(AllFinger_PositionX[iFinger],AllFinger_PositionY[iFinger],color=AllColor[iFinger])
+
+        plt.xlim(firstPointX-200,firstPointX+200)
+        plt.ylim(firstPointY-200,firstPointY+200)
+
+
+    def DrawTap(TaskData,User,test,task):
+        AllFinger_PositionX=list()
+        AllFinger_PositionY=list()
+        AllFinger_PositionX_Dropout=list()
+        AllFinger_PositionY_Dropout=list()
+
+        AllColor=['red','blue','green','yellow','pink','orange','purple','gray','black','red','blue','green','yellow','pink','orange','purple','gray','black']
+        #print(TaskData[0])
+        firstPointX=TaskData["tracks"][0]["touches"][0]["location"][0]
+        firstPointY=TaskData["tracks"][0]["touches"][0]['location'][1]
+        TargetX=TaskData["targetFrame"][0][0]+ TaskData["targetFrame"][1][0]*0.5
+        TargetY=TaskData["targetFrame"][0][1]+ TaskData["targetFrame"][1][1]*0.5
+        
+        X1=TaskData["targetFrame"][0][0]
+        Y1=TaskData["targetFrame"][0][1]   
+
+        fig = plt.figure(figsize=(10, 8))
+        outer = gridspec.GridSpec(3, 2, wspace=0.1, hspace=0.1)
+
+        fig3,ax3=plt.subplots(1)
+        AllFinger_PositionX=list()
+        AllFinger_PositionY=list()
+        rect=patches.Rectangle((TaskData["targetFrame"][0][0],TaskData["targetFrame"][0][1]),TaskData["targetFrame"][1][0],TaskData["targetFrame"][1][1],edgecolor='red',facecolor='None')
+        ax3.add_patch(rect)
+        #print(len(TaskData["tracks"]))
+        for iFinger in range(len(TaskData["tracks"])):
+            AllFinger_PositionX.append([])
+            AllFinger_PositionY.append([])
+            for iPoint in range(len(TaskData["tracks"][iFinger]["touches"])):
+                if TaskData["tracks"][iFinger]["touches"][iPoint]['label']==True:
+                    AllFinger_PositionX[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][0])
+                    AllFinger_PositionY[iFinger].append(TaskData["tracks"][iFinger]["touches"][iPoint]['location'][1])
+
+        for iFinger in range(len(AllFinger_PositionX)):
+            TouchPoint=ax3.scatter(AllFinger_PositionX[iFinger],AllFinger_PositionY[iFinger],color=AllColor[iFinger])
+
+        pan=None
+        #ANNY-NOTE: modified
+        for e in TaskData['events']:
+            if e['type']=='pan':
+                pan = ax3.scatter(e['location'][0],e['location'][1],color='purple',marker=r" ${}$ ".format(chr(10230)),label='pan event',s=150)
+        # for panevent in range(len(TaskData['panEvents'])):
+        #     # if panevent%3==0:
+        #     if True:
+        #         pan=ax3.scatter(TaskData['panEvents'][panevent]['location'][0],TaskData['panEvents'][panevent]['location'][1],color='purple',marker=r" ${}$ ".format(chr(10230)),label='pan event',s=150)
+                
+                
+        if pan!=None:
+
+            ax3.legend([TouchPoint,rect,pan],['Touch Point','target button','Pan Event'])
+        else:
+            ax3.legend([TouchPoint,rect],['Touch Point','target button'])
+        
+        ax3.set_title(str(User) +" "+str(task)+"Task"+" Trial "+str(test))
+        plt.xlim(TargetX-100,TargetX+100)
+        plt.ylim(TargetY-100,TargetY+100)
+
+
+
+        
+
+
+
+    AllUser=User
+    UserLabel=User
+    Alllist=list()
+    #AllUser=['3007','3008','3009','3010','3011','3012','3014']
+    AllUserPan=list()
+    AllUserTap=list()
+    import matplotlib.pyplot as plt
+   
+
+    #path='StudyData/NewData/'+User+'/'
+    path = 'Data/'
+    files=listdir(path)
+    file=list()
+    for i in range(len(files)):
+        if files[i][-4:]=='json':
+            file.append(files[i])
+
+    GraphData=ReadData(path,file)
+
+    Device_info=GraphData[0]['deviceInfo']['screenSize']
+    Tap_GraphData=GraphData[0]['tap']['trials']
+    LongPress_GraphData=GraphData[0]['longPress']['trials']
+    Swipe_GraphData=GraphData[0]['swipe']['trials']
+    HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
+    VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
+
+    
+    task='longPress'
+    if Trial<=len(LongPress_GraphData)-1:
+        test=Trial
+        TaskData=LongPress_GraphData[Trial]
+        LabelAllTrue(TaskData)
+        #AfterFilterData,Success=tapopt.TapOptimizer_Graph(TaskData,stage)
+        DrawTap(TaskData,UserLabel,Trial,task)
+        #print(Success)
+    
+        plt.show()
+    else:
+        print("Exceeded Index of Trial")
 def TapTaskFailure(User,Trial):
     import numpy as np
     import matplotlib.patches as patches
@@ -4519,11 +4673,14 @@ from keras.models import Sequential, model_from_json
 #OverView()
 #####
 #AnalyzeError_AllUser()
-#AnalyzeErrorOneTask('horizontalScroll')
+
+## 分析每個 task 的 event 組成
+AnalyzeErrorOneTask('verticalScroll')
+
 #TapTaskFailure('3010',10)
 
-TapOptimizer_Analysis('3010',0,6)
-
+#TapOptimizer_Analysis('3010',0,6)
+#LongPress_Analysis('3010',1,0)
 #PanTaskFailure('3011','verticalScroll' ,2)
 
 
