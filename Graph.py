@@ -88,61 +88,16 @@ def LabelFalse(InputTaskData,iTrial,iFinger,iPoint):
 
 
 def ReadData(path_0,file_0):
-    data = {}
-    for i in range(len(file_0)):
-        with open(path_0+file_0[i],encoding = 'utf8') as json_file: 
-            
-            data_0= json.load(json_file)
-            
-            if file_0[i]!=file_0[0]:
-                try:
-                    data['horizontalScroll']=data_0['horizontalScroll']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['verticalScroll']=data_0['verticalScroll']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['tap']=data_0['tap']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['swipe']=data_0['swipe']
-                    
-                except:
-                    a=1
-                    #print("No file")
-            elif file_0[i]==file_0[0]:
-                data=data_0
-                try:
-                    data['horizontalScroll']=data_0['horizontalScroll']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['verticalScroll']=data_0['verticalScroll']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['tap']=data_0['tap']
-                except:
-                    a=1
-                    #print("No file")
-                try:
-                    data['swipe']=data_0['swipe']
-                    
-                except:
-                    a=1
-                    #print("No file")
-                
-    #print(data['tap'])
-    Device_info=data['deviceInfo']['screenSize']
-    return data,Device_info
+    #data = {}
+
+    with open(path_0+file_0,encoding = 'utf8') as json_file: 
+        
+        data_0= json.load(json_file)
+    try:        
+        Device_info=data_0['deviceInfo']['screenSize']
+    except:
+        print("ReadData: deviceInfo doesn't exist.")
+    return data_0,Device_info
 
 def PlotJerk_AllTask(PlotData):
     import matplotlib.pyplot as plt
@@ -1527,34 +1482,36 @@ def DurationDiscreteGesture_v1():
 
     #AllUser=['3007','3008','3009','3010','3011','3012','3014']
     #ANNY-NOTE: change number of user
-    for iUser in range(1):
-        User=AllUser[iUser]
+    #for iUser in range(1):
+        #User=AllUser[iUser]
         #path='StudyData/NewData/'+User+'/'
-        path = "Data/"
-        files=listdir(path)
-        file=list()
-        for i in range(len(files)):
-            if files[i][-4:]=='json':
-                file.append(files[i])
-
+    path = "Data/"
+    files=listdir(path)
+    myFile=list()
+    for i in range(len(files)):
+        if files[i][-4:]=='json':
+            myFile.append(files[i])
+    index = 0
+    #fig = plt.figure(figsize=(12, 14))
+    for file in myFile:
         GraphData=ReadData(path,file)
-
+        index = index+1
         Device_info=GraphData[0]['deviceInfo']['screenSize']
         Tap_GraphData=GraphData[0]['tap']['trials']
         Swipe_GraphData=GraphData[0]['swipe']['trials']
         HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
         VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
 
-        # plt.subplots_adjust(wspace=0.5,hspace=0.5)
-        # plt.subplot(4,3,iUser+1)
-        fig = plt.figure(figsize=(10, 8))
+        plt.subplots_adjust(wspace=0.5,hspace=0.5)
+        plt.subplot(4,3,index+1)
+        # fig = plt.figure(figsize=(10, 8))
         
-        fig3,ax3=plt.subplots(1)
-        PlotJerk_AllVelocity(GraphData[0],User)
+        # fig3,ax3=plt.subplots(1)
+        PlotJerk_AllVelocity(GraphData[0],'User '+str(index))
         #PlotJerk_Accelerate(GraphData[0],User)
         #Plot_FingerTime(GraphData[0],User,iUser+1)
 
-    plt.savefig('DurationDiscreteGesture.png')
+    plt.savefig('OutputImage/DurationDiscreteGesture.png')
     plt.show()
 
 def TapMovement():
@@ -1679,16 +1636,16 @@ def DurationDiscreteGesture_v2():
     AllUserPan=list()
     AllUserTap=list()
     import matplotlib.pyplot as plt
-    for iUser in range(1):
-        User=AllUser[iUser]
+    #for iUser in range(1):
+        #User=AllUser[iUser]
         #path='StudyData/NewData/'+User+'/'
-        path = 'Data/'
-        files=listdir(path)
-        file=list()
-        for i in range(len(files)):
-            if files[i][-4:]=='json':
-                file.append(files[i])
-
+    path = 'Data/'
+    files=listdir(path)
+    myFile=list()
+    for i in range(len(files)):
+        if files[i][-4:]=='json':
+            myFile.append(files[i])
+    for file in myFile:
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
@@ -1750,8 +1707,8 @@ def DurationDiscreteGesture_v2():
     plt.xlabel=AllUserLabel
     plt.ylabel='sec'
     plt.xticks([1,2,3,4,5,6,7,8,9,10,11,12,13],AllUserLabel)
-    plt.yticks(np.arange(0,0.5,0.1))
-    plt.ylim([0,0.5])
+    plt.yticks(np.arange(0,1.0,0.1))
+    plt.ylim([0,1.0])
 
 
 
@@ -1774,13 +1731,13 @@ def DurationDiscreteGesture_v2():
     plt.title("Duration in swipe(fast pan) task (sec)")
     plt.ylabel='sec'
 
-    plt.yticks(np.arange(0,0.5,0.1))
-    plt.ylim([0,0.5])
+    plt.yticks(np.arange(0,1.0,0.1))
+    plt.ylim([0,1.0])
         # plt.xticks([y+1 for y in range(len(all_data))], ['x1', 'x2', 'x3'])
         # plt.xlabel('measurement x')
         # t = plt.title('Box plot')
 
-
+    plt.savefig('OutputImage/GestureDuration.png')
     plt.show()
 
 
@@ -3227,18 +3184,19 @@ def AnalyzeErrorOneTask(task):
         
     
     #ANNY-Note: change numer
-    for iUser in range(1):
-        User=AllUser[iUser ]
-        #path='StudyData/NewData/'+User+'/'
-        path = 'Data/'
-        files=listdir(path)
-        file=list()
-        for i in range(len(files)):
-            if files[i][-4:]=='json':
-                file.append(files[i])
-
-        GraphData=ReadData(path,file)
-
+    #for iUser in range(1):
+    #User=AllUser[iUser ]
+    #path='StudyData/NewData/'+User+'/'
+    path = 'Data/'
+    files=listdir(path)
+    myFile=list()
+    index = 0
+    for i in range(len(files)):
+        if files[i][-4:]=='json':
+            myFile.append(files[i])
+    for file in myFile:
+        GraphData = ReadData(path,file)
+        index = index+1
         Device_info=GraphData[0]['deviceInfo']['screenSize']
         ## ANNY-NOTE: 其實不用那麼長
         Tap_GraphData=GraphData[0]['tap']['trials']
@@ -3262,14 +3220,14 @@ def AnalyzeErrorOneTask(task):
         colors = ['red','blue','orange','yellow','green', 'pink',  'purple','lightskyblue','black']
 
 
-        plt.subplot(3,5,iUser+1)
+        plt.subplot(3,5,index)
            
         plt.pie(TapError,colors=colors,explode=explode_Tap,autopct=lambda pct: plot_func(pct, TapError),pctdistance= 1.1)
-        plt.title("P"+str(iUser+1)+" "+task)
-        #if iUser==12:  
-        plt.legend(labels=labels,bbox_to_anchor=[0,1,3.5,0],prop={'size':12})
+        plt.title("P"+str(index+1)+" "+task)
+        if index==len(myFile):  
+            plt.legend(labels=labels,bbox_to_anchor=[0,1,3.5,0],prop={'size':12})
             
-
+    plt.savefig('OutputImage/AnalyzeErrorOneTask_'+task+'.png')
     plt.show()
 
 
@@ -3302,63 +3260,65 @@ def AnalyzeError_AllUser():
         
 
         for iTrial in range(len(GraphData)):
-            OtherEvent=OtherEventFuc(GraphData,iTrial)
-            if len(GraphData[iTrial]['tapEvents'])==1:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            tapEvents,longPressEvents,panEvents,swipeEvents,otherEvents = GetAllEvents(GraphData[iTrial])
+            #OtherEvent=OtherEventFuc(GraphData,iTrial)
+            OtherEvent = len(otherEvents)
+            if len(tapEvents)==1:
+                if len(panEvents)==0:
                     if OtherEvent==0:
                         OnlyTap_Count=OnlyTap_Count+1
             
-            if len(GraphData[iTrial]['tapEvents'])>0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)>0:
+                if len(panEvents)>0:
                     if OtherEvent==0:
                         TapScroll_Count=TapScroll_Count+1
 
 
 
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)==0:
+                if len(panEvents)>0:
                     if OtherEvent==0:
                         NumberOfPanBegan=0
-                        for i in range(len(GraphData[iTrial]['panEvents'])):
-                            if GraphData[iTrial]['panEvents'][i]['state']=='began':
+                        for i in range(len(panEvents)):
+                            if panEvents[i]['state']=='began':
                                 NumberOfPanBegan=NumberOfPanBegan+1
                         OnlyScroll_Count=OnlyScroll_Count+1
                        
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])==0: 
+            if len(tapEvents)==0:
+                if len(panEvents)==0: 
                     if OtherEvent>0:
                         OnlyOtherEvent=OnlyOtherEvent+1
 
-            if len(GraphData[iTrial]['tapEvents'])==1:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==1:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
-            if len(GraphData[iTrial]['tapEvents'])==2:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==2:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
-            if len(GraphData[iTrial]['tapEvents'])>=3:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)>=3:
+                if len(panEvents)==0:
                     if OtherEvent>0:
                         OtherEventCount_Tap=OtherEventCount_Tap+1
-            if len(GraphData[iTrial]['tapEvents'])>0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)>0:
+                if len(panEvents)>0:
                     if OtherEvent>0:
                         OtherEventCount_Tap_Scroll=OtherEventCount_Tap_Scroll+1
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])>0:
+            if len(tapEvents)==0:
+                if len(panEvents)>0:
                     if OtherEvent>0:
                         NumberOfPanBegan=0
-                        for i in range(len(GraphData[iTrial]['panEvents'])):
-                            if GraphData[iTrial]['panEvents'][i]['state']=='began':
+                        for i in range(len(panEvents)):
+                            if panEvents[i]['state']=='began':
                                 NumberOfPanBegan=NumberOfPanBegan+1
                         if NumberOfPanBegan==1:
 
                             OtherEventCount_Scroll=OtherEventCount_Scroll+1
                         elif NumberOfPanBegan>1:
                             OtherEventCount_Scroll=OtherEventCount_Scroll+1
-            if len(GraphData[iTrial]['tapEvents'])==0:
-                if len(GraphData[iTrial]['panEvents'])==0:
+            if len(tapEvents)==0:
+                if len(panEvents)==0:
                     if OtherEvent==0:
                         NoEvent_Count=NoEvent_Count+1
         
@@ -3492,16 +3452,18 @@ def AnalyzeError_AllUser():
     AllUserTapError=[0,0,0,0,0,0,0,0]
     AllUserPanError=[0,0,0,0,0,0,0,0]
 
-    for iUser in range(len(AllUser)):
-        User=AllUser[iUser]
-        path='StudyData/NewData/'+User+'/'
-
-        files=listdir(path)
-        file=list()
-        for i in range(len(files)):
-            if files[i][-4:]=='json':
-                file.append(files[i])
-
+    #for iUser in range(len(AllUser)):
+    #User=AllUser[iUser]
+    #path='StudyData/NewData/'+User+'/'
+    path = 'Data/'
+    files=listdir(path)
+    myfile=list()
+    for i in range(len(files)):
+        if files[i][-4:]=='json':
+            myfile.append(files[i])
+            #print(files[i])
+    for file in myfile:
+        print(file)
         GraphData=ReadData(path,file)
 
         Device_info=GraphData[0]['deviceInfo']['screenSize']
@@ -3509,7 +3471,7 @@ def AnalyzeError_AllUser():
         Swipe_GraphData=GraphData[0]['swipe']['trials']
         HScroll_GraphData=GraphData[0]['horizontalScroll']['trials']
         VScroll_GraphData=GraphData[0]['verticalScroll']['trials']
-
+        LongPress_GraphData = GraphData[0]['longPress']['trials']
         TapError,labels=Analyzing2(Tap_GraphData)
 
         Tapvals = np.array([[TapError[0], TapError[1],0,0,0,0,0,0],[0,0,TapError[2], TapError[3],TapError[4], TapError[5],TapError[6], TapError[7]]])
@@ -3519,7 +3481,7 @@ def AnalyzeError_AllUser():
         SwipeError,labels=Analyzing2(Swipe_GraphData)
         HScrollError,labels=Analyzing2(HScroll_GraphData)
         VScrollError,labels=Analyzing2(VScroll_GraphData)
-
+        longPressError, labels = Analyzing2(LongPress_GraphData)
         AllPanError=np.zeros(len(TapError))
 
 
@@ -3561,7 +3523,7 @@ def AnalyzeError_AllUser():
     #                               textprops=dict(color="black"))
     plt.pie(AllUserPanError,colors=colors,autopct=lambda pct: plot_func(pct, AllUserPanError))
 
-    plt.title("Default system events in pan task for all users")
+    plt.title("OutputImage/Default system events in pan task for all users")
               
     #plt.legend(labels=labels,bbox_to_anchor=[-1,-1,-1,],prop={'size':16})
 
@@ -4167,7 +4129,7 @@ def TapOptimizer_Analysis(User,Trial,stage):
         if files[i][-4:]=='json':
             file.append(files[i])
 
-    GraphData=ReadData(path,file)
+    GraphData=ReadData(path,file[0])
 
     Device_info=GraphData[0]['deviceInfo']['screenSize']
     Tap_GraphData=GraphData[0]['tap']['trials']
@@ -4189,7 +4151,7 @@ def TapOptimizer_Analysis(User,Trial,stage):
         DrawTap(TaskData,UserLabel,Trial,task)
         
         #print(Success)
-    
+        plt.savefig('tapOptimizerAnalysis.png')
         plt.show()
     else:
         print("Exceeded Index of Trial")
@@ -4496,10 +4458,10 @@ def TapTaskFailure(User,Trial):
         LabelAllTrue(TaskData)
         
 
-        #AfterFilterData,Success=tapopt.TapOptimizer_Graph(TaskData,5)
+        AfterFilterData,Success=tapopt.TapOptimizer_Graph(TaskData,5)
         DrawTap(TaskData,UserLabel,Trial,task)
         
-        #print(Success)
+        print(Success)
     
         plt.show()
     else:
@@ -4672,20 +4634,25 @@ from keras.models import Sequential, model_from_json
 
 #OverView()
 #####
-#AnalyzeError_AllUser()
 
-## 分析每個 task 的 event 組成
-AnalyzeErrorOneTask('verticalScroll')
+## ANNY-NOTE:分析綜合資料(所有user的 Tap/pan)
+AnalyzeError_AllUser()
+
+## ANNY-NOTE: 分析每個 task 的 event 組成
+#AnalyzeErrorOneTask('tap')
 
 #TapTaskFailure('3010',10)
 
-#TapOptimizer_Analysis('3010',0,6)
+#TapOptimizer_Analysis('3010',1,6)
 #LongPress_Analysis('3010',1,0)
 #PanTaskFailure('3011','verticalScroll' ,2)
 
-
+#ANNY_NOTE: 速度分析
 #DurationDiscreteGesture_v1()
+
+#ANNY-NOTE:手勢時間分析
 #DurationDiscreteGesture_v2()
+
 #DefaultSystemRecognitionTime()
 #ModelArchitecture('3001',0,0.05,'Dynamic')
 #KinematicsFeatures()
