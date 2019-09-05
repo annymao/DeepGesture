@@ -12,5 +12,6 @@ for cp in data:
         print(data[cp][d]["subject"]["id"])
         print(data[cp][d]["subject"]["name"])
         fileName = "Data/"+str(data[cp][d]["subject"]["id"])+"_"+data[cp][d]["subject"]["name"]+".json"
-        with open(fileName, 'w') as f:
-            json.dump(data, f)
+        if(data[cp][d]["subject"]["id"]==0 or data[cp][d]["subject"]["id"]==1):
+            with open(fileName, 'w') as f:
+                json.dump(data[cp][d], f)
